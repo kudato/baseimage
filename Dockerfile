@@ -5,6 +5,7 @@ ENV \
     TZ=UTC    \
     APP_USER=app     \
     APP_UID=1001     \
+    RUN_AS=app  \
     DOCKER_GID=999
 
 COPY entrypoint.sh /usr/bin/entrypoint.sh

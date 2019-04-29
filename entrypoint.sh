@@ -20,4 +20,4 @@ echo "${TZ}" > /etc/timezone
 
 # run using su-exec
 # more details - https://github.com/ncopa/su-exec
-exec su-exec ${APP_USER} $@
+exec su-exec ${RUN_AS} $@
