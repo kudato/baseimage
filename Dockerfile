@@ -23,5 +23,4 @@ RUN \
         tini \
     && chmod +x /usr/bin/entrypoint.sh
 
-WORKDIR /srv
 ENTRYPOINT [ "tini", "--", "/usr/bin/entrypoint.sh" ]
