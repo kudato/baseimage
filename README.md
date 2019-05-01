@@ -15,7 +15,7 @@ Image ```kudato/baseimage:latest``` is designed to be an lightweight, ready-to-u
 Minimal Dockerfile example:
 ```dockerfile
 FROM kudato/baseimage:latest
-CMD [ "tai", "/home" ]
+CMD [ "tail", "-f", "/dev/null" ]
 ```
 
 ### Set up:
