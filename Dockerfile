@@ -1,8 +1,9 @@
 FROM alpine:3.9
 
 ENV \
-    DOCKER_GID=999      \
-    TZ=UTC
+    TZ=UTC              \
+    LANG=en_US.UTF-8     \
+    DOCKER_GID=999
 
 COPY entrypoint.sh /usr/bin/
 COPY scripts /usr/bin/
