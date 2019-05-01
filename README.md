@@ -26,11 +26,11 @@ CMD [ "tai", "/home" ]
 
 -----
 
-Receive env-vars from [Vault KV Version 1/2](https://www.vaultproject.io/docs/secrets/kv/index.html) set ```VAULT_ENABLED``` to ```True``` and:
+Receive env-vars from [Vault KV Version 1/2](https://www.vaultproject.io/docs/secrets/kv/index.html).
+Set ```VAULT_ENABLED``` to ```True``` for enable.
+Required config:
 
 - ```VAULT_KV_VERSION``` - ```1``` or ```2```;
 - ```VAULT_TOKEN``` - your read-only token;
 - ```VAULT_ADDR``` - example: ```http://127.0.0.1:8200```;
 - ```VAULT_PATH``` - example: ```secret/project```.
-
-_all ```VAULT``` prefixed vars required_
