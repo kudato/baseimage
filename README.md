@@ -1,4 +1,4 @@
-# baseimage
+# baseimage [![Build Status](https://drone.kudato.com/api/badges/kudato/baseimage/status.svg)](https://drone.kudato.com/kudato/baseimage)
 
 Image ```kudato/baseimage:latest``` is designed to be an lightweight, ready-to-use base for various docker images.
 
