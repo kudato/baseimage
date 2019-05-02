@@ -1,0 +1,127 @@
+kind: pipeline
+name: Publish to Docker Hub
+
+steps:
+- name: Make
+  image: alpine:3.9
+  commands:
+  - apk add --no-cache bash
+  - chmod +x make.sh && ./make.sh
+  when:
+    branch:
+    - master
+
+
+- name: Dockerfile
+  image: plugins/docker
+  when:
+    branch:
+    - master
+  settings:
+    repo: kudato/baseimage
+    dockerfile: Dockerfile
+    username:
+      from_secret: docker_username
+    password:
+      from_secret: docker_password
+    tags:
+      - latest
+      - 3.9
+
+
+- name: python/3.7/Dockerfile
+  image: plugins/docker
+  when:
+    branch:
+    - master
+  settings:
+    repo: kudato/baseimage
+    dockerfile: python/3.7/Dockerfile
+    username:
+      from_secret: docker_username
+    password:
+      from_secret: docker_password
+    tags:
+      - python-3.7
+
+
+- name: python/3.6/Dockerfile
+  image: plugins/docker
+  when:
+    branch:
+    - master
+  settings:
+    repo: kudato/baseimage
+    dockerfile: python/3.6/Dockerfile
+    username:
+      from_secret: docker_username
+    password:
+      from_secret: docker_password
+    tags:
+      - python-3.6
+
+
+- name: php/7.3-cli/Dockerfile
+  image: plugins/docker
+  when:
+    branch:
+    - master
+  settings:
+    repo: kudato/baseimage
+    dockerfile: php/7.3-cli/Dockerfile
+    username:
+      from_secret: docker_username
+    password:
+      from_secret: docker_password
+    tags:
+      - php-7.3
+
+
+- name: php/7.3-fpm/Dockerfile
+  image: plugins/docker
+  when:
+    branch:
+    - master
+  settings:
+    repo: kudato/baseimage
+    dockerfile: php/7.3-fpm/Dockerfile
+    username:
+      from_secret: docker_username
+    password:
+      from_secret: docker_password
+    tags:
+      - php-7.3
+
+
+- name: php/7.2-cli/Dockerfile
+  image: plugins/docker
+  when:
+    branch:
+    - master
+  settings:
+    repo: kudato/baseimage
+    dockerfile: php/7.2-cli/Dockerfile
+    username:
+      from_secret: docker_username
+    password:
+      from_secret: docker_password
+    tags:
+      - php-7.2
+
+
+- name: php/7.2-fpm/Dockerfile
+  image: plugins/docker
+  when:
+    branch:
+    - master
+  settings:
+    repo: kudato/baseimage
+    dockerfile: php/7.2-fpm/Dockerfile
+    username:
+      from_secret: docker_username
+    password:
+      from_secret: docker_password
+    tags:
+      - php-7.2
+
+
