@@ -82,12 +82,12 @@ make_dockerfiles() {
                 local clitag="${v}-cli-alpine${VERSION}"
                 local clifile=$(create_dockerfile $1 ${v}-cli)
                 sed -i "s|FROM alpine:${VERSION}|FROM php:${clitag}|g" $clifile
-                create_pipeline $clifile ${1}-${v}
+                create_pipeline $clifile ${1}-${v}-cli
                 # fpm
                 local fpmtag="${v}-fpm-alpine${VERSION}"
                 local fpmfile=$(create_dockerfile $1 ${v}-fpm)
                 sed -i "s|FROM alpine:${VERSION}|FROM php:${fpmtag}|g" $fpmfile
-                create_pipeline $fpmfile ${1}-${v}
+                create_pipeline $fpmfile ${1}-${v}-fpm
                 ;;
         esac
     done

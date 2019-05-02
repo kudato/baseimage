@@ -74,7 +74,7 @@ steps:
     password:
       from_secret: docker_password
     tags:
-      - php-7.3
+      - php-7.3-cli
 
 
 - name: php/7.3-fpm/Dockerfile
@@ -90,7 +90,7 @@ steps:
     password:
       from_secret: docker_password
     tags:
-      - php-7.3
+      - php-7.3-fpm
 
 
 - name: php/7.2-cli/Dockerfile
@@ -106,7 +106,7 @@ steps:
     password:
       from_secret: docker_password
     tags:
-      - php-7.2
+      - php-7.2-cli
 
 
 - name: php/7.2-fpm/Dockerfile
@@ -122,6 +122,6 @@ steps:
     password:
       from_secret: docker_password
     tags:
-      - php-7.2
+      - php-7.2-fpm
 
 
