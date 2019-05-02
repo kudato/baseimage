@@ -1,7 +1,7 @@
 FROM alpine:3.9
 
 ENV \
-    TZ=UTC              \
+    TZ=UTC               \
     LANG=en_US.UTF-8     \
     DOCKER_GID=999
 
