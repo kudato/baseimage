@@ -115,9 +115,9 @@ if __name__ == "__main__":
          >> (
                 'python:3.7-alpine3.9',
                 (
-                	'python',
                     'python-3.7',
-                    'python-3.7-alpine3.9'
+                    'python-3.7-alpine3.9',
+                    'python'
                 )
             ) \
          >> (
@@ -130,17 +130,17 @@ if __name__ == "__main__":
          >> (
                 'php:7.3-cli-alpine3.9',
                 (
-                     'php-cli',
                      'php-cli-7.3',
-                     'php-cli-7.3-alpine3.9'
+                     'php-cli-7.3-alpine3.9',
+                     'php-cli'
                  )
             ) \
          >> (
                 'php:7.3-fpm-alpine3.9',
                 (
-                    'php-fpm',
                     'php-fpm-7.3',
-                    'php-fpm-7.3-alpine3.9'
+                    'php-fpm-7.3-alpine3.9',
+                    'php-fpm'
                 )
             ) \
          >> (
@@ -176,9 +176,10 @@ if __name__ == "__main__":
          >> (
                 'node:10.15-alpine',
                 (
-                    'node',
                     'node-10.15',
-                    'node-10.15-alpine3.9'
+                    'node-10.15-alpine3.9',
+                    'node',
+
                 )
 
             ) \

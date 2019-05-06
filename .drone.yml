@@ -35,19 +35,19 @@ steps:
 
 # ---------------------------------
 
-- name: python
+- name: python-3.7
   image: plugins/docker
   settings:
     repo: kudato/baseimage
-    dockerfile: .images/python/Dockerfile
+    dockerfile: .images/python-3.7/Dockerfile
     username:
       from_secret: docker_username
     password:
       from_secret: docker_password
     tags:
-      - python
       - python-3.7
       - python-3.7-alpine3.9
+      - python
 
   when:
     branch:
@@ -76,19 +76,19 @@ steps:
 
 # ---------------------------------
 
-- name: php-cli
+- name: php-cli-7.3
   image: plugins/docker
   settings:
     repo: kudato/baseimage
-    dockerfile: .images/php-cli/Dockerfile
+    dockerfile: .images/php-cli-7.3/Dockerfile
     username:
       from_secret: docker_username
     password:
       from_secret: docker_password
     tags:
-      - php-cli
       - php-cli-7.3
       - php-cli-7.3-alpine3.9
+      - php-cli
 
   when:
     branch:
@@ -97,19 +97,19 @@ steps:
 
 # ---------------------------------
 
-- name: php-fpm
+- name: php-fpm-7.3
   image: plugins/docker
   settings:
     repo: kudato/baseimage
-    dockerfile: .images/php-fpm/Dockerfile
+    dockerfile: .images/php-fpm-7.3/Dockerfile
     username:
       from_secret: docker_username
     password:
       from_secret: docker_password
     tags:
-      - php-fpm
       - php-fpm-7.3
       - php-fpm-7.3-alpine3.9
+      - php-fpm
 
   when:
     branch:
@@ -198,19 +198,19 @@ steps:
 
 # ---------------------------------
 
-- name: node
+- name: node-10.15
   image: plugins/docker
   settings:
     repo: kudato/baseimage
-    dockerfile: .images/node/Dockerfile
+    dockerfile: .images/node-10.15/Dockerfile
     username:
       from_secret: docker_username
     password:
       from_secret: docker_password
     tags:
-      - node
       - node-10.15
       - node-10.15-alpine3.9
+      - node
 
   when:
     branch:
