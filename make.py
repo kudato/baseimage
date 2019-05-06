@@ -191,10 +191,10 @@ if __name__ == "__main__":
 
             ) \
          >> (
-                'node:12.15-alpine',
+                'node:12.1-alpine',
                 (
-                    'node-12.15',
-                    'node-12.15-alpine3.9'
+                    'node-12.1',
+                    'node-12.1-alpine3.9'
                 )
 
             )
