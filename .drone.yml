@@ -1,22 +1,22 @@
+
 kind: pipeline
 name: Publish to Docker Hub
 
 steps:
 - name: Make
-  image: alpine:3.9
+  image: python:3.7-alpine3.9
   commands:
-  - apk add --no-cache bash
-  - chmod +x make.sh && ./make.sh
+  - chmod +x make.py && ./make.py
+
   when:
     branch:
     - master
 
 
-- name: Dockerfile
+# ---------------------------------
+
+- name: latest
   image: plugins/docker
-  when:
-    branch:
-    - master
   settings:
     repo: kudato/baseimage
     dockerfile: Dockerfile
@@ -28,100 +28,233 @@ steps:
       - latest
       - 3.9
 
-
-- name: python/3.7/Dockerfile
-  image: plugins/docker
   when:
     branch:
     - master
+
+
+# ---------------------------------
+
+- name: python
+  image: plugins/docker
   settings:
     repo: kudato/baseimage
-    dockerfile: python/3.7/Dockerfile
+    dockerfile: .images/python/Dockerfile
     username:
       from_secret: docker_username
     password:
       from_secret: docker_password
     tags:
+      - python
       - python-3.7
+      - python-3.7-alpine3.9
 
-
-- name: python/3.6/Dockerfile
-  image: plugins/docker
   when:
     branch:
     - master
+
+
+# ---------------------------------
+
+- name: python-3.6
+  image: plugins/docker
   settings:
     repo: kudato/baseimage
-    dockerfile: python/3.6/Dockerfile
+    dockerfile: .images/python-3.6/Dockerfile
     username:
       from_secret: docker_username
     password:
       from_secret: docker_password
     tags:
       - python-3.6
+      - python-3.6-alpine3.9
 
-
-- name: php/7.3-cli/Dockerfile
-  image: plugins/docker
   when:
     branch:
     - master
+
+
+# ---------------------------------
+
+- name: php-cli
+  image: plugins/docker
   settings:
     repo: kudato/baseimage
-    dockerfile: php/7.3-cli/Dockerfile
+    dockerfile: .images/php-cli/Dockerfile
     username:
       from_secret: docker_username
     password:
       from_secret: docker_password
     tags:
-      - php-7.3-cli
+      - php-cli
+      - php-cli-7.3
+      - php-cli-7.3-alpine3.9
 
-
-- name: php/7.3-fpm/Dockerfile
-  image: plugins/docker
   when:
     branch:
     - master
+
+
+# ---------------------------------
+
+- name: php-fpm
+  image: plugins/docker
   settings:
     repo: kudato/baseimage
-    dockerfile: php/7.3-fpm/Dockerfile
+    dockerfile: .images/php-fpm/Dockerfile
     username:
       from_secret: docker_username
     password:
       from_secret: docker_password
     tags:
-      - php-7.3-fpm
+      - php-fpm
+      - php-fpm-7.3
+      - php-fpm-7.3-alpine3.9
 
-
-- name: php/7.2-cli/Dockerfile
-  image: plugins/docker
   when:
     branch:
     - master
+
+
+# ---------------------------------
+
+- name: php-cli-7.2
+  image: plugins/docker
   settings:
     repo: kudato/baseimage
-    dockerfile: php/7.2-cli/Dockerfile
+    dockerfile: .images/php-cli-7.2/Dockerfile
     username:
       from_secret: docker_username
     password:
       from_secret: docker_password
     tags:
-      - php-7.2-cli
+      - php-cli-7.2
+      - php-cli-7.2-alpine3.9
 
-
-- name: php/7.2-fpm/Dockerfile
-  image: plugins/docker
   when:
     branch:
     - master
+
+
+# ---------------------------------
+
+- name: php-fpm-7.2
+  image: plugins/docker
   settings:
     repo: kudato/baseimage
-    dockerfile: php/7.2-fpm/Dockerfile
+    dockerfile: .images/php-fpm-7.2/Dockerfile
     username:
       from_secret: docker_username
     password:
       from_secret: docker_password
     tags:
-      - php-7.2-fpm
+      - php-fpm-7.2
+      - php-fpm-7.2-alpine3.9
+
+  when:
+    branch:
+    - master
 
 
+# ---------------------------------
+
+- name: node-6.17
+  image: plugins/docker
+  settings:
+    repo: kudato/baseimage
+    dockerfile: .images/node-6.17/Dockerfile
+    username:
+      from_secret: docker_username
+    password:
+      from_secret: docker_password
+    tags:
+      - node-6.17
+      - node-6.17-alpine3.9
+
+  when:
+    branch:
+    - master
+
+
+# ---------------------------------
+
+- name: node-8.16
+  image: plugins/docker
+  settings:
+    repo: kudato/baseimage
+    dockerfile: .images/node-8.16/Dockerfile
+    username:
+      from_secret: docker_username
+    password:
+      from_secret: docker_password
+    tags:
+      - node-8.16
+      - node-8.16-alpine3.9
+
+  when:
+    branch:
+    - master
+
+
+# ---------------------------------
+
+- name: node
+  image: plugins/docker
+  settings:
+    repo: kudato/baseimage
+    dockerfile: .images/node/Dockerfile
+    username:
+      from_secret: docker_username
+    password:
+      from_secret: docker_password
+    tags:
+      - node
+      - node-10.15
+      - node-10.15-alpine3.9
+
+  when:
+    branch:
+    - master
+
+
+# ---------------------------------
+
+- name: node-11.15
+  image: plugins/docker
+  settings:
+    repo: kudato/baseimage
+    dockerfile: .images/node-11.15/Dockerfile
+    username:
+      from_secret: docker_username
+    password:
+      from_secret: docker_password
+    tags:
+      - node-11.15
+      - node-11.15-alpine3.9
+
+  when:
+    branch:
+    - master
+
+
+# ---------------------------------
+
+- name: node-12.15
+  image: plugins/docker
+  settings:
+    repo: kudato/baseimage
+    dockerfile: .images/node-12.15/Dockerfile
+    username:
+      from_secret: docker_username
+    password:
+      from_secret: docker_password
+    tags:
+      - node-12.15
+      - node-12.15-alpine3.9
+
+  when:
+    branch:
+    - master
+
+
+# ---------------------------------
