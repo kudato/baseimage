@@ -239,18 +239,18 @@ steps:
 
 # ---------------------------------
 
-- name: node-12.15
+- name: node-12.1
   image: plugins/docker
   settings:
     repo: kudato/baseimage
-    dockerfile: .images/node-12.15/Dockerfile
+    dockerfile: .images/node-12.1/Dockerfile
     username:
       from_secret: docker_username
     password:
       from_secret: docker_password
     tags:
-      - node-12.15
-      - node-12.15-alpine3.9
+      - node-12.1
+      - node-12.1-alpine3.9
 
   when:
     branch:
