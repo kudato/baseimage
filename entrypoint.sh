@@ -6,7 +6,7 @@ if [ -f "/etc/localtime" ]; then rm /etc/localtime; fi
 cp /usr/share/zoneinfo/${TZ} /etc/localtime
 echo "${TZ}" > /etc/timezone
 
-if [ -n "${INIT}" ]; then source /usr/bin/init.sh; fi
+if [ -n "${INIT}" ]; then source ${INIT}; fi
 if [ -n "${CMD_USER}" ]
 then
 	source /usr/bin/adduser.sh
