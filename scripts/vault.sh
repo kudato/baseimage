@@ -1,34 +1,41 @@
 #!/bin/bash
 
-# checks is set required variables
+# checks is set required vars
 if [ -z "${VAULT_TOKEN}" ] \
- | [ -z "${VAULT_ADDR}" ] \
  | [ -z "${VAULT_PATH}" ]
 then
     echo "ERROR! Vault is enabled, but required variables are not set."
     exit 2
 fi
 
-request_data() {
+if [ -n "${ENVIRONMENT}" ]
+then
+    export VAULT_PATH=${VAULT_PATH}/${ENVIRONMENT}
+fi
+
+vault_request() {
     echo $(curl -s \
                 -H "Accept: application/json" \
                 -H "X-Vault-Token: ${VAULT_TOKEN}" \
-                -X GET $1)
+                -X GET "${VAULT_PATH}")
 }
 
-# for version 1 of kv-storage
-if [ -z "${VAULT_KV_VERSION}" ] | [ "${VAULT_KV_VERSION}" == "1" ]
+# default verison
+if [ -z "${VAULT_KV_VERSION}" ]
 then
-    secret_data=$(request_data "${VAULT_ADDR}/v1/secret/${VAULT_PATH}" \
+    export VAULT_KV_VERSION=1
+fi
+
+if [ "${VAULT_KV_VERSION}" == "1" ]
+then
+    secret_data=$(vault_request \
                   | jq '.data | to_entries | map([.key, .value]|join("="))|join(" ")')
 
-# for version 2 of kv-storage
 elif [ "${VAULT_KV_VERSION}" == "2" ]
 then
-    secret_data=$(request_data "${VAULT_ADDR}/v1/secret/data/${VAULT_PATH}" \
+    secret_data=$(vault_request \
                   | jq '.data | .data | to_entries | map([.key, .value]|join("="))|join(" ")')
 
-# error handling
 else
     echo "ERROR! Wrong version of the secrets engine."
     echo "Please set version 1 or 2 to VAULT_KV_VERSION variable"
@@ -40,7 +47,6 @@ if [ "${secret_data}" == "" ]; then
     exit 1
 fi
 
-# exporting received secrets in environment variables
 for var in $(echo ${secret_data:1:${#secret_data}-2}); do
     export $var
 done
