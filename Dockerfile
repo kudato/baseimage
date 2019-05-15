@@ -1,9 +1,8 @@
 FROM alpine:3.9
 
 ENV \
-    TZ=UTC               \
-    LANG=en_US.UTF-8     \
-    DOCKER_GID=999
+    TZ=UTC \
+    LANG=en_US.UTF-8
 
 COPY entrypoint.sh /usr/bin/
 COPY scripts /usr/bin/
@@ -22,6 +21,15 @@ RUN \
         ca-certificates \
         su-exec \
         tini \
-    && chmod +x /usr/bin/entrypoint.sh
+    && chmod +x \
+            /usr/bin/entrypoint.sh \
+            /usr/bin/healthcheck.sh
+
+HEALTHCHECK \
+    --start-period=5s \
+    --interval=10s \
+    --timeout=10s \
+    --retries=3 \
+    CMD /usr/bin/healthcheck.sh
 
 ENTRYPOINT [ "tini", "--", "/usr/bin/entrypoint.sh" ]
