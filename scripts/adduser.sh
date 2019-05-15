@@ -1,14 +1,27 @@
 #!/bin/bash
 
-grep "${CMD_USER}" /etc/passwd >/dev/null
-if [ $? -ne 0 ]
-then
-    if [ -z "${USER_UID}" ]; then export USER_UID=1001; fi
-    adduser -s /bin/bash -D -u ${USER_UID} ${CMD_USER}
-    export _USER_PATH=/home/${CMD_USER} && mkdir -p ${_USER_PATH}
-    if [ "${PWD}" != "/" ]
-    then
-        export _USER_PATH="${_USER_PATH} ${PWD}"
+uid_counter() {
+    if [ -z "${LASTUID}" ]; then
+        export LASTUID=1001
     fi
-    chown -R ${CMD_USER}:${CMD_USER} ${_USER_PATH}
-fi
+    let uid=$((${LASTUID} + 1))
+    export LASTUID=$uid
+    echo $uid
+}
+
+create_user() { # $1 - name(required), $2 - uid, $3 - shell
+    local path=/home/${1}
+    grep "${1}" /etc/passwd >/dev/null
+    if [ "$?" -ne "0" ]; then
+        if [ ! -d "${path}" ]; then mkdir -p $path; fi
+
+        if [ -z "$2" ]
+        then
+            local uid=$(uid_counter)
+        else
+            local uid=$2
+        fi
+        adduser -s /bin/bash -D -u ${uid} ${1} \
+        && chown -R ${1}:${1} ${path}
+    fi
+}
