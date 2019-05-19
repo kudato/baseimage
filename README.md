@@ -72,7 +72,7 @@ All checks run in parallel, and the script ends with code 1 if at least one of t
 
 #### Vault
 
-For enable, set ```VAULT_ENABLED``` to ```True``` and set:
+For enable, set ```VAULT``` to ```True``` and set:
 
 - ```VAULT_KV_VERSION``` to ```1``` or ```2```, default set is ```1```;
 - ```VAULT_TOKEN``` - access token;
