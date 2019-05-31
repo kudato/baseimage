@@ -19,9 +19,15 @@ check_exitcode() {
 }
 
 check_http() {
-    local url=$(echo "${1}" | cut -f1 -d",")
-    local code=$(echo "${1}" | sed -r 's/[^,]+//' | sed 's|,||g')
-    local response=$(curl -s -m ${CHECK_TIMEOUT} -o /dev/null -w "%{http_code}" ${url})
+    local url
+    url=$(echo "${1}" | cut -f1 -d",")
+
+    local code
+    code=$(echo "${1}" | sed -r 's/[^,]+//' | sed 's|,||g')
+
+    local response
+    response=$(curl -s -m ${CHECK_TIMEOUT} -o /dev/null -w "%{http_code}" ${url})
+
     check_exitcode
     if [ "${response}" != "${code}" ]
     then
@@ -30,15 +36,23 @@ check_http() {
 }
 
 check_tcp() {
-    local url=$(echo "${1}" | cut -f1 -d":")
-    local port=$(echo "${1}" | sed -r 's/[^:]+//' | sed 's|:||g')
+    local url
+    url=$(echo "${1}" | cut -f1 -d":")
+    
+    local port
+    port=$(echo "${1}" | sed -r 's/[^:]+//' | sed 's|:||g')
+
     nc -z -v -w${CHECK_TIMEOUT} $url $port >/dev/null 2>/dev/null
     check_exitcode
 }
 
 check_udp() {
-    local url=$(echo "${1}" | cut -f1 -d":")
-    local port=$(echo "${1}" | sed -r 's/[^:]+//' | sed 's|:||g')
+    local url
+    url=$(echo "${1}" | cut -f1 -d":")
+
+    local port
+    port=$(echo "${1}" | sed -r 's/[^:]+//' | sed 's|:||g')
+
     nc -vzu -w${CHECK_TIMEOUT} $url $port >/dev/null 2>/dev/null
     check_exitcode
 }

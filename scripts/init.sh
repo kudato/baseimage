@@ -1,12 +1,16 @@
 #!/bin/bash
 
 init_scripts() {
-    local result="${INIT}"
+    local result
+    result="${INIT}"
+
     for script in $(env | grep INIT | grep SH | sort)
     do
-      local path=$(echo "$script" | sed -r 's/[^=]+//' | sed 's|=||g')
-      local result="${path} ${result}"
+      local path
+      path=$(echo "$script" | sed -r 's/[^=]+//' | sed 's|=||g')
+      result="${path} ${result}"
     done
+
     echo $result
 }
 

@@ -17,7 +17,8 @@ create_user() { # $1 - name(required), $2 - uid, $3 - shell
 
         if [ -z "$2" ]
         then
-            local uid=$(uid_counter)
+            local uid
+            uid=$(uid_counter)
         else
             local uid=$2
         fi
