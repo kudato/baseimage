@@ -4,7 +4,7 @@ uid_counter() {
     if [ -z "${LASTUID}" ]; then
         export LASTUID=1001
     fi
-    let uid=$((${LASTUID} + 1))
+    let uid=$((LASTUID + 1))
     export LASTUID=$uid
     echo $uid
 }
