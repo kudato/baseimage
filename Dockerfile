@@ -4,9 +4,6 @@ ENV \
     TZ=UTC \
     LANG=en_US.UTF-8
 
-COPY entrypoint.sh /usr/bin/
-COPY scripts /usr/bin/
-
 RUN \
     # re-creating the ping group with a different id
     # since on the host this identifier may belong to the docker user
@@ -24,6 +21,9 @@ RUN \
     && chmod +x \
             /usr/bin/entrypoint.sh \
             /usr/bin/healthcheck.sh
+
+COPY entrypoint.sh /usr/bin/
+COPY scripts /usr/bin/
 
 HEALTHCHECK \
     --start-period=5s \
