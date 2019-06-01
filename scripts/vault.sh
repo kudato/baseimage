@@ -47,6 +47,6 @@ if [ "${secret_data}" == "" ]; then
     exit 1
 fi
 
-for var in $(echo ${secret_data:1:${#secret_data}-2}); do
+for var in $(echo "${secret_data:1:${#secret_data}-2}"); do
     export $var
 done

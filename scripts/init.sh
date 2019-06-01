@@ -10,8 +10,7 @@ init_scripts() {
       path=$(echo "$script" | sed -r 's/[^=]+//' | sed 's|=||g')
       result="${path} ${result}"
     done
-
-    echo $result
+    echo "$result"
 }
 
 check_file_exist() {
@@ -22,8 +21,8 @@ check_file_exist() {
 }
 
 init_exec() {
-    check_file_exist ${1}
-    chmod +x ${1}
+    check_file_exist "${1}"
+    chmod +x "${1}"
     ${1}
     if [ "$?" -ne "0" ]; then
         echo "${1} exitcode is $?, executed failed"
@@ -33,5 +32,5 @@ init_exec() {
 
 for i in $(init_scripts)
 do
-    init_exec $i
+    init_exec "$i"
 done

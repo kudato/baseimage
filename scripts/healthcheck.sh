@@ -42,7 +42,7 @@ check_tcp() {
     local port
     port=$(echo "${1}" | sed -r 's/[^:]+//' | sed 's|:||g')
 
-    nc -z -v -w${CHECK_TIMEOUT} $url $port >/dev/null 2>/dev/null
+    nc -z -v -w${CHECK_TIMEOUT} "$url" "$port" >/dev/null 2>/dev/null
     check_exitcode
 }
 
@@ -53,31 +53,31 @@ check_udp() {
     local port
     port=$(echo "${1}" | sed -r 's/[^:]+//' | sed 's|:||g')
 
-    nc -vzu -w${CHECK_TIMEOUT} $url $port >/dev/null 2>/dev/null
+    nc -vzu -w${CHECK_TIMEOUT} "$url" "$port" >/dev/null 2>/dev/null
     check_exitcode
 }
 
 check_pidfile() {
-    if [ ! -f ${1} ]; then unhealthy; fi # if no file
-    timeout ${CHECK_TIMEOUT} kill -0 $(cat ${1}) >/dev/null
+    if [ ! -f "${1}" ]; then unhealthy; fi # if no file
+    timeout ${CHECK_TIMEOUT} kill -0 $(cat "${1}") >/dev/null
     check_exitcode
 }
 
 check_socket() {
-    if [ ! -S ${1} ]
+    if [ ! -S "${1}" ]
     then
         unhealthy
     fi
 }
 
 check_sh() {
-    chmod +x $1
-    timeout ${CHECK_TIMEOUT} $1
+    chmod +x "$1"
+    timeout "${CHECK_TIMEOUT}" "$1"
     check_exitcode
 }
 
 health_env() {
-    echo $(env | grep HEALTHCHECK | grep $1 | sort)
+    echo $(env | grep HEALTHCHECK | grep "$1" | sort)
 }
 
 env_value() { # $1 is 'EXAMPLE=value' -> value returned
@@ -90,7 +90,7 @@ check_counter() {
 
 for i in $(health_env PIDFILE)
 do
-    if [ $(env_value $i) ]; then
+    if [ $(env_value "$i") ]; then
         check_pidfile $(env_value $i) &
         check_counter $!
     fi
@@ -98,7 +98,7 @@ done
 
 for i in $(health_env SOCKET)
 do
-    if [ $(env_value $i) ]; then
+    if [ $(env_value "$i") ]; then
         check_socket $(env_value $i) &
         check_counter $!
     fi
@@ -106,31 +106,31 @@ done
 
 for i in $(health_env SH)
 do
-    check_sh $(env_value $i) &
+    check_sh $(env_value "$i") &
     check_counter $!
 done
 
 for i in $(health_env HTTP)
 do
-    check_http $(env_value $i) &
+    check_http $(env_value "$i") &
     check_counter $!
 done
 
 for i in $(health_env TCP)
 do
-    check_tcp $(env_value $i) &
+    check_tcp $(env_value "$i") &
     check_counter $!
 done
 
 for i in $(health_env UDP)
 do
-    check_udp $(env_value $i) &
+    check_udp $(env_value "$i") &
     check_counter $!
 done
 
 for i in ${CHECK_TASKS}
 do
-    wait $i
+    wait "$i"
     check_exitcode $?
 done
 
