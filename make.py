@@ -62,7 +62,7 @@ class Dockerfile:
         self.create('Dockerfile', self.os, self.tags)
 
     def __rshift__(self, conf):
-        self.create(f'.images/{conf[1][0]}/Dockerfile',conf[0],conf[1])
+        self.create(f'dockerfiles/{conf[1][0]}/Dockerfile',conf[0],conf[1])
         return self
 
     @property
