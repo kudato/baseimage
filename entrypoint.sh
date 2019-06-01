@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [ "${VAULT}" == "True" ]
+if [ -n "${VAULT_TOKEN}" ]
 then
 	source /usr/bin/vault.sh
 fi
@@ -10,9 +10,9 @@ source /usr/bin/adduser.sh
 
 if [ -n "${CMD_USER}" ]
 then
-	create_user ${CMD_USER} ${CMD_USER_UID}
-	set -- su-exec ${CMD_USER} $@
+	create_user "${CMD_USER}" "${CMD_USER_UID}"
+	set -- su-exec "${CMD_USER}" "$@"
 fi
 
 source /usr/bin/init.sh
-exec $@
+exec "$@"
