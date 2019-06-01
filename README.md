@@ -72,10 +72,13 @@ All checks run in parallel, and the script ends with code 1 if at least one of t
 
 #### Vault
 
-For enable, set ```VAULT``` to ```True``` and set:
+All values from VAULT_URL will be imported into environment variables if the following variables are defined:
 
 - ```VAULT_KV_VERSION``` to ```1``` or ```2```, default set is ```1```;
+- ```VAULT_ADDR``` - Vault server address;
 - ```VAULT_TOKEN``` - access token;
-- ```VAULT_PATH``` - path to secrets in *Vault*, for example - ```https://127.0.0.1:8200/v1/secret/my-secret```.
+- ```VAULT_PATH``` - path to secrets in *Vault*.
+
+if ```ENVIRONMENT``` is defined, its value is added to the end of ```VAULT_PATH```.
 
 Runs on container starting. All received keys and values ​​will be exported to environment variables before running the ```INIT``` script and ```CMD```.
