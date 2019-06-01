@@ -59,7 +59,7 @@ check_udp() {
 
 check_pidfile() {
     if [ ! -f "${1}" ]; then unhealthy; fi # if no file
-    timeout ${CHECK_TIMEOUT} kill -0 $(cat "${1}") >/dev/null
+    timeout ${CHECK_TIMEOUT} kill -0 "$(cat "${1}")" >/dev/null
     check_exitcode
 }
 
@@ -77,7 +77,9 @@ check_sh() {
 }
 
 health_env() {
-    echo $(env | grep HEALTHCHECK | grep "$1" | sort)
+    local vars
+    vars=$(env | grep HEALTHCHECK | grep "$1" | sort)
+    echo "$vars"
 }
 
 env_value() { # $1 is 'EXAMPLE=value' -> value returned
@@ -90,8 +92,8 @@ check_counter() {
 
 for i in $(health_env PIDFILE)
 do
-    if [ $(env_value "$i") ]; then
-        check_pidfile $(env_value $i) &
+    if [ "$(env_value "$i")" ]; then
+        check_pidfile "$(env_value "$i")" &
         check_counter $!
     fi
 done
@@ -99,32 +101,32 @@ done
 for i in $(health_env SOCKET)
 do
     if [ $(env_value "$i") ]; then
-        check_socket $(env_value $i) &
+        check_socket "$(env_value "$i")" &
         check_counter $!
     fi
 done
 
 for i in $(health_env SH)
 do
-    check_sh $(env_value "$i") &
+    check_sh "$(env_value "$i")" &
     check_counter $!
 done
 
 for i in $(health_env HTTP)
 do
-    check_http $(env_value "$i") &
+    check_http "$(env_value "$i")" &
     check_counter $!
 done
 
 for i in $(health_env TCP)
 do
-    check_tcp $(env_value "$i") &
+    check_tcp "$(env_value "$i")" &
     check_counter $!
 done
 
 for i in $(health_env UDP)
 do
-    check_udp $(env_value "$i") &
+    check_udp "$(env_value "$i")" &
     check_counter $!
 done
 
