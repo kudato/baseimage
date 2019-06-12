@@ -40,6 +40,8 @@ There are several images that differ in the main image and are available by tags
 | ```node-10.15```, ```node-10.15-alpine3.9```                 | ```node:10.15-alpine```     |
 | ```node-11.15```, ```node-11.15-alpine3.9```                 | ```node:11.15-alpine```     |
 | ```node-12.1```, ```node-12.1-alpine3.9```                   | ```node:12.1-alpine```      |
+| ```docker-18.09```, ```docker-18.09-alpine3.9```                   | ```docker:18.09```      |
+
 
 ### Environment variables
 

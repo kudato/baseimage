@@ -258,3 +258,23 @@ steps:
 
 
 # ---------------------------------
+
+- name: docker-18.09
+  image: plugins/docker
+  settings:
+    repo: kudato/baseimage
+    dockerfile: dockerfiles/docker-18.09/Dockerfile
+    username:
+      from_secret: docker_username
+    password:
+      from_secret: docker_password
+    tags:
+      - docker-18.09
+      - docker-18.09-alpine3.9
+
+  when:
+    branch:
+    - master
+
+
+# ---------------------------------

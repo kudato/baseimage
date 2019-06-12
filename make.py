@@ -197,6 +197,11 @@ if __name__ == "__main__":
                     'node-12.1',
                     'node-12.1-alpine3.9'
                 )
-
+            ) \
+         >> (
+                'docker:18.09',
+                (
+                    'docker-18.09',
+                    'docker-18.09-alpine3.9'
+                )
             )
-
