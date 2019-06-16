@@ -56,7 +56,7 @@ class Dockerfile:
 
     def __init__(self, file, t='w'):
         self.dockerfile = file
-        self.tags = ('latest', self.os.split(':')[1])
+        self.tags = ('latest', f'{self.os.split(":")[0]}{self.os.split(":")[1]}')
         self.write(self.tmpl.Head() + self.tmpl.When(),
                    self.tmpl.Pipeline(), t)
         self.create('Dockerfile', self.os, self.tags)
@@ -70,7 +70,8 @@ class Dockerfile:
         return self.readline(self.dockerfile)[5:15]
 
     def create(self, path, from_, tags):
-        self.create_pipeline(path, tags)
+        commit_sha = (tags[0] + '-' + '${DRONE_COMMIT_SHA:0:7}',)
+        self.create_pipeline(path, tags + commit_sha)
         if path != self.dockerfile:
             copy(self.dockerfile, self.create_dir(path))
             self.write(self.read(path).replace(

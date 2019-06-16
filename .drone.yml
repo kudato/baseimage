@@ -26,7 +26,8 @@ steps:
       from_secret: docker_password
     tags:
       - latest
-      - 3.9
+      - alpine3.9
+      - latest-${DRONE_COMMIT_SHA:0:7}
 
   when:
     branch:
@@ -48,6 +49,7 @@ steps:
       - python-3.7
       - python-3.7-alpine3.9
       - python
+      - python-3.7-${DRONE_COMMIT_SHA:0:7}
 
   when:
     branch:
@@ -68,6 +70,7 @@ steps:
     tags:
       - python-3.6
       - python-3.6-alpine3.9
+      - python-3.6-${DRONE_COMMIT_SHA:0:7}
 
   when:
     branch:
@@ -89,6 +92,7 @@ steps:
       - php-cli-7.3
       - php-cli-7.3-alpine3.9
       - php-cli
+      - php-cli-7.3-${DRONE_COMMIT_SHA:0:7}
 
   when:
     branch:
@@ -110,6 +114,7 @@ steps:
       - php-fpm-7.3
       - php-fpm-7.3-alpine3.9
       - php-fpm
+      - php-fpm-7.3-${DRONE_COMMIT_SHA:0:7}
 
   when:
     branch:
@@ -130,6 +135,7 @@ steps:
     tags:
       - php-cli-7.2
       - php-cli-7.2-alpine3.9
+      - php-cli-7.2-${DRONE_COMMIT_SHA:0:7}
 
   when:
     branch:
@@ -150,6 +156,7 @@ steps:
     tags:
       - php-fpm-7.2
       - php-fpm-7.2-alpine3.9
+      - php-fpm-7.2-${DRONE_COMMIT_SHA:0:7}
 
   when:
     branch:
@@ -170,6 +177,7 @@ steps:
     tags:
       - node-6.17
       - node-6.17-alpine3.9
+      - node-6.17-${DRONE_COMMIT_SHA:0:7}
 
   when:
     branch:
@@ -190,6 +198,7 @@ steps:
     tags:
       - node-8.16
       - node-8.16-alpine3.9
+      - node-8.16-${DRONE_COMMIT_SHA:0:7}
 
   when:
     branch:
@@ -211,6 +220,7 @@ steps:
       - node-10.15
       - node-10.15-alpine3.9
       - node
+      - node-10.15-${DRONE_COMMIT_SHA:0:7}
 
   when:
     branch:
@@ -231,6 +241,7 @@ steps:
     tags:
       - node-11.15
       - node-11.15-alpine3.9
+      - node-11.15-${DRONE_COMMIT_SHA:0:7}
 
   when:
     branch:
@@ -251,6 +262,7 @@ steps:
     tags:
       - node-12.1
       - node-12.1-alpine3.9
+      - node-12.1-${DRONE_COMMIT_SHA:0:7}
 
   when:
     branch:
@@ -271,6 +283,7 @@ steps:
     tags:
       - docker-18.09
       - docker-18.09-alpine3.9
+      - docker-18.09-${DRONE_COMMIT_SHA:0:7}
 
   when:
     branch:
