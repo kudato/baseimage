@@ -22,6 +22,7 @@ RUN \
         su-exec \
         tini \
     && chmod +x \
+            /usr/bin/vault.sh \
             /usr/bin/entrypoint.sh \
             /usr/bin/healthcheck.sh
 
