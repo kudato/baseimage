@@ -20,9 +20,20 @@ create_user() { # $1 - name(required), $2 - uid, $3 - shell
             local uid
             uid=$(uid_counter)
         else
-            local uid=$2
+            local uid
+            uid=$2
         fi
-        adduser -s /bin/bash -D -u "${uid}" "${1}" \
+
+        if [ -z "$3" ]
+        then
+            local shell
+            shell=/bin/bash
+        else
+            local shell
+            shell=$3
+        fi
+
+        adduser -s "${shell}" -D -u "${uid}" "${1}" \
         && chown -R "${1}":"${1}" "${path}"
     fi
 }
