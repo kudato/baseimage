@@ -11,8 +11,8 @@ uid_counter() {
 
 create_user() { # $1 - name(required), $2 - uid, $3 - shell
     local path=/home/${1}
-    grep "${1}" /etc/passwd >/dev/null
-    if [ "$?" -ne "0" ]; then
+    if ! grep "${1}" /etc/passwd
+    then
         if [ ! -d "${path}" ]; then mkdir -p "$path"; fi
 
         if [ -z "$2" ]
