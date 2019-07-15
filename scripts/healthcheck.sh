@@ -1,139 +1,47 @@
 #!/bin/bash
 
-CHECK_TIMEOUT=10
-CHECK_TASKS=""
+source /usr/bin/lib.sh
 
-unhealthy() {
-    for process in ${CHECK_TASKS}
+EXITCODE=0
+
+checkHealthy() {
+    # ------------------------------------------
+    # Checks exit codes healthcheck tasks
+    # ------------------------------------------
+    # $1 - value.
+    # ------------------------------------------
+    # return - None
+    # ------------------------------------------
+    if [[ "${1}" != "0" ]]
+    then
+        export EXITCODE=1
+    fi
+}
+
+runChecks() {
+    # ------------------------------------------
+    # Runs all healthchecks in background.
+    # ------------------------------------------
+    for type in \
+        SCRIPT,"runFile" \
+        HTTP,"checkHttpCode" \
+        TCP,"checkTCP" \
+        UDP,"checkUDP" \
+        SOCKET,"checkSocket" \
+        PIDFILE,"checkPidfile"
     do
-        kill -9 $process >/dev/null 2>/dev/null &
+        local envName
+        envName=$(getLeft "," "${type}")
+        for task in $(filterEnvValues "HEALTHCHECK" "${envName}")
+        do
+            bgStart "$(getRight "," "${type}")" "${task}" &>/dev/null
+        done
     done
-    exit 1
 }
 
-check_exitcode() {
-    if [ "$?" -ne "0" ]
-    then
-        unhealthy
-    fi
-}
-
-check_http() {
-    local url
-    url=$(echo "${1}" | cut -f1 -d",")
-
-    local code
-    code=$(echo "${1}" | sed -r 's/[^,]+//' | sed 's|,||g')
-
-    local response
-    response=$(curl -s -m ${CHECK_TIMEOUT} -o /dev/null -w "%{http_code}" ${url})
-
-    check_exitcode
-    if [ "${response}" != "${code}" ]
-    then
-          unhealthy
-    fi
-}
-
-check_tcp() {
-    local url
-    url=$(echo "${1}" | cut -f1 -d":")
-    
-    local port
-    port=$(echo "${1}" | sed -r 's/[^:]+//' | sed 's|:||g')
-
-    nc -z -v -w${CHECK_TIMEOUT} "$url" "$port" >/dev/null 2>/dev/null
-    check_exitcode
-}
-
-check_udp() {
-    local url
-    url=$(echo "${1}" | cut -f1 -d":")
-
-    local port
-    port=$(echo "${1}" | sed -r 's/[^:]+//' | sed 's|:||g')
-
-    nc -vzu -w${CHECK_TIMEOUT} "$url" "$port" >/dev/null 2>/dev/null
-    check_exitcode
-}
-
-check_pidfile() {
-    if [ ! -f "${1}" ]; then unhealthy; fi # if no file
-    timeout ${CHECK_TIMEOUT} kill -0 "$(cat "${1}")" >/dev/null
-    check_exitcode
-}
-
-check_socket() {
-    if [ ! -S "${1}" ]
-    then
-        unhealthy
-    fi
-}
-
-check_sh() {
-    chmod +x "$1"
-    timeout "${CHECK_TIMEOUT}" "$1"
-    check_exitcode
-}
-
-health_env() {
-    local vars
-    vars=$(env | grep HEALTHCHECK | grep "$1" | sort)
-    echo "$vars"
-}
-
-env_value() { # $1 is 'EXAMPLE=value' -> value returned
-    echo "$1" | sed -r 's/[^=]+//' | sed 's|=||g'
-}
-
-check_counter() {
-    export CHECK_TASKS="${1} ${CHECK_TASKS}"
-}
-
-for i in $(health_env PIDFILE)
+runChecks && bgWait
+for code in ${BG_TASKS_EXITCODES}
 do
-    if [ "$(env_value "$i")" ]; then
-        check_pidfile "$(env_value "$i")" &
-        check_counter $!
-    fi
+    checkHealthy "${code}"
 done
-
-for i in $(health_env SOCKET)
-do
-    if [ $(env_value "$i") ]; then
-        check_socket "$(env_value "$i")" &
-        check_counter $!
-    fi
-done
-
-for i in $(health_env SH)
-do
-    check_sh "$(env_value "$i")" &
-    check_counter $!
-done
-
-for i in $(health_env HTTP)
-do
-    check_http "$(env_value "$i")" &
-    check_counter $!
-done
-
-for i in $(health_env TCP)
-do
-    check_tcp "$(env_value "$i")" &
-    check_counter $!
-done
-
-for i in $(health_env UDP)
-do
-    check_udp "$(env_value "$i")" &
-    check_counter $!
-done
-
-for i in ${CHECK_TASKS}
-do
-    wait "$i"
-    check_exitcode $?
-done
-
-exit 0
+exit "${EXITCODE}"
