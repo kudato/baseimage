@@ -4,7 +4,6 @@ ENV \
     TZ=UTC \
     LANG=en_US.UTF-8
 
-COPY entrypoint.sh /usr/bin/
 COPY scripts /usr/bin/
 
 RUN \
@@ -22,6 +21,7 @@ RUN \
         su-exec \
         tini \
     && chmod +x \
+            /usr/bin/vault.sh \
             /usr/bin/entrypoint.sh \
             /usr/bin/healthcheck.sh
 
