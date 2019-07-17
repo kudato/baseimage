@@ -62,9 +62,9 @@ class TestExec(unittest.TestCase):
 
 class TestFunctions(unittest.TestCase):
     env = dict(
-        FOO='bar',
-        BAR='baz',
-        BAZ='foo'
+        FOOOOOO='barrrrr',
+        BARRRRR='bazzzzz',
+        BAZZZZZ='foooooo'
     )
 
     def test_uuid(self):
@@ -72,14 +72,14 @@ class TestFunctions(unittest.TestCase):
 
     def test_map(self):
         self.assertEqual(
-            bash('map "echo" "FOO BAR BAZ"'),
-            'FOO BAR BAZ'
+            bash('map "echo" "FOOOOOO BARRRRR BAZZZZZ"'),
+            'FOOOOOO BARRRRR BAZZZZZ'
         )
 
     def test_curry(self):
         self.assertEqual(
-            bash('curry test echo "FOO=BAR" &>/dev/null; test'),
-            'FOO=BAR'
+            bash('curry test echo "FOOOOOO=BARRRRR" &>/dev/null; test'),
+            'FOOOOOO=BARRRRR'
         )
 
     def test_getLeft(self):
@@ -90,29 +90,29 @@ class TestFunctions(unittest.TestCase):
 
     def test_getEnv(self):
         with patch.dict(os.environ, self.env):
-            self.assertEqual(bash('getEnv "FOO"'), 'bar')
+            self.assertEqual(bash('getEnv "FOOOOOO"'), 'barrrrr')
 
     def test_searchEnv(self):
         with patch.dict(os.environ, self.env):
-            self.assertEqual(bash('searchEnv BA R'),'BAR=baz')
+            self.assertEqual(bash('searchEnv BAR RRRR'),'BARRRRR=bazzzzz')
 
     def test_searchEnvKeys(self):
         with patch.dict(os.environ, self.env):
-            self.assertEqual(bash('searchEnv.Keys BA R'),'BAR')
+            self.assertEqual(bash('searchEnv.Keys BAR RRRR'),'BARRRRR')
 
     def test_searchEnvValues(self):
         with patch.dict(os.environ, self.env):
-            self.assertEqual(bash('searchEnv.Values BA R'),'baz')
+            self.assertEqual(bash('searchEnv.Values BAR RRRR'),'bazzzzz')
 
     def test_defaultEnv(self):
         with patch.dict(os.environ, self.env):
             self.assertEqual(
-                bash('defaultEnv "FOO,BAR,TEST=12"; echo "${TEST}"'),
-                'baz'
+                bash('defaultEnv "FOO,BARRRRR,TEST=12"; echo "${TEST}"'),
+                'bazzzzz'
             )
             self.assertEqual(
-                bash('defaultEnv "BAR,NOT,TEST=12"; echo "${TEST}"'),
-                'baz'
+                bash('defaultEnv "BARRRRR,NOT,TEST=12"; echo "${TEST}"'),
+                'bazzzzz'
             )
             self.assertEqual(
                 bash('defaultEnv "NOT,TON,TEST=12"; echo "${TEST}"'),
