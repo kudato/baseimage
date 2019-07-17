@@ -26,7 +26,7 @@ RUN \
             /usr/bin/healthcheck.sh
 
 HEALTHCHECK \
-    --start-period=5s \
+    --start-period=30s \
     --interval=10s \
     --timeout=10s \
     --retries=3 \
