@@ -16,10 +16,9 @@ kind: pipeline
 name: Publish to Docker Hub
 
 steps:
-- name: Make
+- name: Tests
   image: python:3.7-alpine3.9
   commands:
-  - chmod +x make.py && ./make.py
   - apk add --no-cache bash curl
   - python3 -m unittest discover tests
 '''
