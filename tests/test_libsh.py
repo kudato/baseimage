@@ -1,5 +1,6 @@
 import os
 import uuid
+import random
 import subprocess
 import threading
 
@@ -9,7 +10,7 @@ from unittest.mock import patch
 from tempfile import mkstemp
 
 
-def bash(cmd: str, env=os.environ.copy()):
+def bash(cmd: str):
     return subprocess.run(
         'source scripts/lib.sh; ' + cmd,
         shell=True,
@@ -91,17 +92,17 @@ class TestFunctions(unittest.TestCase):
         with patch.dict(os.environ, self.env):
             self.assertEqual(bash('getEnv "FOO"'), 'bar')
 
-    def test_filterEnv(self):
+    def test_searchEnv(self):
         with patch.dict(os.environ, self.env):
-            self.assertEqual(bash('filterEnv BA R'),'BAR=baz')
+            self.assertEqual(bash('searchEnv BA R'),'BAR=baz')
 
-    def test_filterEnvKeys(self):
+    def test_searchEnvKeys(self):
         with patch.dict(os.environ, self.env):
-            self.assertEqual(bash('filterEnvKeys BA R'),'BAR')
+            self.assertEqual(bash('searchEnv.Keys BA R'),'BAR')
 
-    def test_filterEnvValues(self):
+    def test_searchEnvValues(self):
         with patch.dict(os.environ, self.env):
-            self.assertEqual(bash('filterEnvValues BA R'),'baz')
+            self.assertEqual(bash('searchEnv.Values BA R'),'baz')
 
     def test_defaultEnv(self):
         with patch.dict(os.environ, self.env):
@@ -120,18 +121,24 @@ class TestFunctions(unittest.TestCase):
 
 
 class TestChecks(unittest.TestCase):
+    def get_port(self):
+        return random.randint(20000,22000)
+
     def test_checkHttpCode(self):
-        bash_thread('timeout 5 nc -lp 23456 -c "echo HTTP/1.1 200 OK\n\n"')
-        self.assertEqual(bash('checkHttpCode 200,localhost:23456; echo $?'),'0')
-        bash_thread('timeout 5 nc -lp 23456 -c "echo HTTP/1.1 200 OK\n\n"')
-        self.assertEqual(bash('checkHttpCode 201,localhost:23456; echo $?'),'1')
+        port = self.get_port()
+        bash_thread(f'timeout 5 nc -lp {port} -c "echo HTTP/1.1 200 OK\n\n"')
+        self.assertEqual(bash(f'checkHttpCode 200,localhost:{port}; echo $?'),'0')
+        bash_thread(f'timeout 5 nc -lp {port} -c "echo HTTP/1.1 200 OK\n\n"')
+        self.assertEqual(bash(f'checkHttpCode 201,localhost:{port}; echo $?'),'1')
 
     def test_checkTcp(self):
-        bash_thread('timeout 5 nc -lp 23456')
-        self.assertEqual(bash('checkTcp localhost:23456; echo $?'),'0')
-        self.assertEqual(bash('checkTcp localhost:23456; echo $?'),'1')
+        port = self.get_port()
+        bash_thread(f'timeout 45 nc -lp {port}')
+        self.assertEqual(bash(f'checkTcp localhost:{port}; echo $?'),'0')
+        self.assertEqual(bash(f'checkTcp localhost:{port}; echo $?'),'1')
 
     def test_checkUdp(self):
-        bash_thread('timeout 5 nc -ulp 23456')
-        self.assertEqual(bash('checkUdp localhost:23456; echo $?'),'0')
-        self.assertEqual(bash('checkUdp localhost:23456; echo $?'),'1')
+        port = self.get_port()
+        bash_thread(f'timeout 5 nc -ulp {port}')
+        self.assertEqual(bash(f'checkUdp localhost:{port}; echo $?'),'0')
+        self.assertEqual(bash(f'checkUdp localhost:{port}; echo $?'),'1')
