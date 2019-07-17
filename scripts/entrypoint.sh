@@ -1,5 +1,4 @@
 #!/bin/bash
-
 source /usr/bin/lib.sh
 setTimeZone "${TZ}"
 
@@ -17,7 +16,7 @@ then
 	set -- su-exec "${CMD_USER}" "$@"
 fi
 
-for result in $(map "runFile" "$(filterEnvValues INIT SCRIPT)")
+for result in $(map "runFile" "$(searchEnv.Values INIT_ SCRIPT)")
 do
 	if [[ "$(getLeft "|" "${result}")" != "0" ]]
 	then
