@@ -1,47 +1,26 @@
 #!/bin/bash
+source ./lib.sh
 
-source /usr/bin/lib.sh
-
-EXITCODE=0
-
-checkHealthy() {
-    # ------------------------------------------
-    # Checks exit codes healthcheck tasks
-    # ------------------------------------------
-    # $1 - value.
-    # ------------------------------------------
-    # return - None
-    # ------------------------------------------
-    if [[ "${1}" != "0" ]]
-    then
-        export EXITCODE=1
-    fi
-}
-
-runChecks() {
-    # ------------------------------------------
-    # Runs all healthchecks in background.
-    # ------------------------------------------
-    for type in \
-        SCRIPT,"runFile" \
-        HTTP,"checkHttpCode" \
-        TCP,"checkTCP" \
-        UDP,"checkUDP" \
-        SOCKET,"checkSocket" \
-        PIDFILE,"checkPidfile"
+for type in \
+    SCRIPT,"runFile" \
+    HTTP,"checkHttpCode" \
+    TCP,"checkTCP" \
+    UDP,"checkUDP" \
+    SOCKET,"checkSocket" \
+    PIDFILE,"checkPidfile"
+do
+    for task in $(searchEnv.Values "HEALTHCHECK" "$(getLeft "," "${type}")")
     do
-        local envName
-        envName=$(getLeft "," "${type}")
-        for task in $(filterEnvValues "HEALTHCHECK" "${envName}")
-        do
-            bgStart "$(getRight "," "${type}")" "${task}" &>/dev/null
-        done
+        bgStart "$(getRight "," "${type}")" "${task}" &>/dev/null
     done
-}
+done
 
-runChecks && bgWait
+bgWait
 for code in ${BG_TASKS_EXITCODES}
 do
-    checkHealthy "${code}"
+    if [[ "${code}" != "0" ]]
+    then
+        exit 1
+    fi
 done
-exit "${EXITCODE}"
+exit 0
