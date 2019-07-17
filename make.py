@@ -19,7 +19,7 @@ steps:
 - name: Tests
   image: python:3.7-alpine3.9
   commands:
-  - apk add --no-cache bash curl
+  - apk add --no-cache bash curl &>/dev/null
   - python3 -m unittest discover tests
 '''
 
