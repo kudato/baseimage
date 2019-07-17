@@ -1,26 +1,79 @@
 #!/bin/bash
 
-# Debug mode
-if [[ -n "${DEBUG_BASH}" ]]
-then
-    set -x
-fi
-
 ####################################################
 ## Functions
 ####################################################
 
+getLeft() {
+    # ------------------------------------------
+    # Left side.
+    # ------------------------------------------
+    # $1 - delimiter;
+    # $2 - input string.
+    # ------------------------------------------
+    # return - string.
+    # ------------------------------------------
+
+    echo "${2%${1}*}"
+}
+
+getRight() {
+    # ------------------------------------------
+    # Right side.
+    # ------------------------------------------
+    # $1 - delimiter;
+    # $2 - input string.
+    # ------------------------------------------
+    # return - string.
+    # ------------------------------------------
+
+    echo "${2#*${1}}"
+}
+
+curry() {
+    # ------------------------------------------
+    # Curry function.
+    # ------------------------------------------
+    # $1     - new function name;
+    # $2     - caring function;
+    # $3-... - args caring function.
+    # ------------------------------------------
+    # return - name new function.
+    # ------------------------------------------
+
+    local new func args
+    new=${1}; shift
+    func=${1}; shift
+    args=${*}
+    eval $"${new}() { ${func} ${args} \${*}; }"
+    echo "${new}"
+}
+
+# uuid4
+curry uuid4 cat /proc/sys/kernel/random/uuid &>/dev/null
+
 uuid() {
     # ------------------------------------------
-    # Generate random string.
-    # ------------------------------------------
-    # $1 - leight.
-    # ------------------------------------------
-    # return - random string
+    # $1 - length.
     # ------------------------------------------
 
     < /dev/urandom \
     tr -dc A-Z-a-z-0-9 | head -c"${1:-"${1}"}";echo;
+}
+
+repeat() {
+    # ------------------------------------------
+    # $1 repeated $2 times
+    # ------------------------------------------
+    declare -a array
+    local index
+    index=0
+    for _ in $(seq "${2}")
+    do
+        result[${index}]=${1}
+        ((index+=1))
+    done
+    echo "${result[@]}"
 }
 
 map() {
@@ -52,53 +105,9 @@ map() {
         result[${index}]=$(${1} "${item}")
         ((index+=1))
     done
-    echo "${result[@]}"
+    echo "${result[*]}"
 }
 
-curry() {
-    # ------------------------------------------
-    # Curry function.
-    # ------------------------------------------
-    # $1     - new function name;
-    # $2     - caring function;
-    # $3-... - args caring function.
-    # ------------------------------------------
-    # return - None
-    # ------------------------------------------
-
-    local new func args
-    new=${1}; shift
-    func=${1}; shift
-    args=${*}
-    eval $"${new}() { ${func} ${args} \${*}; }"
-    echo "${new}"
-}
-
-getLeft() {
-    # ------------------------------------------
-    # Left side of string to the delimiter.
-    # ------------------------------------------
-    # $1 - delimiter;
-    # $2 - input string.
-    # ------------------------------------------
-    # return - string.
-    # ------------------------------------------
-
-    echo "${2%${1}*}"
-}
-
-getRight() {
-    # ------------------------------------------
-    # Right side of string to the delimiter.
-    # ------------------------------------------
-    # $1 - delimiter;
-    # $2 - input string.
-    # ------------------------------------------
-    # return - string.
-    # ------------------------------------------
-
-    echo "${2#*${1}}"
-}
 
 ####################################################
 ## Environment
@@ -122,9 +131,10 @@ defaultEnv() {
     # list and exports the first value found
     # with the name of last variable name.
     # ------------------------------------------
-    # $1 - VAR1,VAR2,VAR3=default_value.
+    # $1 - VAR1,VAR2,VAR3=default_value,
+    # VAR3=value will be exported
     # ------------------------------------------
-    # return - None
+    # return - None.
     # ------------------------------------------
 
     local vars name value
@@ -143,30 +153,30 @@ defaultEnv() {
     export "${name}"="${value}"
 }
 
-filterEnv() {
+searchEnv() {
     # ------------------------------------------
-    # Finds variables by two keys,
-    # returns in format key=value
+    # Finds variables by two keys and
+    # returns in key=value format.
     # ------------------------------------------
-    # $1 - first Key;
-    # $2 - second Key.
+    # $1 - first;
+    # $2 - second.
     # ------------------------------------------
     # return - array of values ​​found.
     # ------------------------------------------
-
-    local index
     declare -a result
-
-    index=0
-    for item in $(env | grep "${1}" | grep "${2}" | sort)
+    local index=0
+    for item in $(env)
     do
-        result[${index}]=${item}
-        ((index+=1))
+        if getLeft "=" "${item}" | grep "${1^^}" | grep "${2^^}"
+        then
+            result[${index}]=${item}
+            ((index+=1))
+        fi
     done
     echo "${result[@]}"
 }
 
-filterEnvKeys() {
+searchEnv.Keys() {
     # ------------------------------------------
     # Finds variables by two keys,
     # returns variable names.
@@ -177,11 +187,11 @@ filterEnvKeys() {
     # return - array of values ​​found.
     # ------------------------------------------
 
-    curry "filterEnvKeys.left" getLeft "=" &> /dev/null
-    map "filterEnvKeys.left" "$(filterEnv "${1}" "${2}")"
+    curry "searchEnv.Keys.left" getLeft "=" &> /dev/null
+    map "searchEnv.Keys.left" "$(searchEnv "${1}" "${2}")"
 }
 
-filterEnvValues() {
+searchEnv.Values() {
     # ------------------------------------------
     # Finds variables by two keys,
     # returns values.
@@ -192,7 +202,7 @@ filterEnvValues() {
     # return - array of values ​​found.
     # ------------------------------------------
 
-    map "getEnv" "$(filterEnvKeys "${1}" "${2}")"
+    map "getEnv" "$(searchEnv.Keys "${1}" "${2}")"
 }
 
 ####################################################
@@ -207,7 +217,7 @@ runFile() {
     # ------------------------------------------
     # $1 - file path.
     # ------------------------------------------
-    # return - EXIT:exitcode:stdout.
+    # return - "1|${1}:FAILED" and exitcode 1.
     # ------------------------------------------
 
     if [[ -f "${1}" ]]
@@ -230,11 +240,12 @@ runFile() {
 
 bgStart() {
     # ------------------------------------------
-    # Runs function in the background.
+    # Run in background
+    # and write pid to BG_TASKS.
     # ------------------------------------------
     # $1, ... - function with arguments.
     # ------------------------------------------
-    # return  - None
+    # return  - None.
     # ------------------------------------------
 
     local pid
@@ -246,12 +257,12 @@ bgStart() {
 
 bgWait() {
     # ------------------------------------------
-    # Wait until all background tasks
-    # are completed.
+    # Sleep until processes from BG_TASKS
+    # run out and export exitcodes to BG_TASKS_EXITCODES.
     # ------------------------------------------
-    # ...    - None
+    # ...    - None.
     # ------------------------------------------
-    # return - None
+    # return - None.
     # ------------------------------------------
 
     declare -a array result
@@ -284,11 +295,9 @@ USERS_UID_START_FROM=1001
 
 setTimeZone() {
     # ------------------------------------------
-    # Configure system time zone.
+    # $1 - Time zone id.
     # ------------------------------------------
-    # $1 - Time zone id
-    # ------------------------------------------
-    # return - None
+    # return - None.
     # ------------------------------------------
     if [[ -f "${TZ_CONFIG_FILE}" ]]
     then
@@ -300,13 +309,11 @@ setTimeZone() {
 
 createUser() {
     # ------------------------------------------
-    # Create user.
-    # ------------------------------------------
     # $1 - name (required);
     # $2 - uid;
     # $3 - user shell.
     # ------------------------------------------
-    # return - None
+    # return - None.
     # ------------------------------------------
     local home=${USERS_HOME}/${1}
     local uid=${2}
@@ -348,9 +355,7 @@ CHECK_TIMEOUT=15
 
 checkHttpCode() {
     # ------------------------------------------
-    # Returns the HTTP response code.
-    # ------------------------------------------
-    # $1 - url;
+    # $1 - "http-code,url".
     # ------------------------------------------
     # return - exit code.
     # ------------------------------------------
@@ -372,11 +377,11 @@ checkHttpCode() {
 checkTcp() {
     # ------------------------------------------
     # Attempts to establish a TCP connection,
-    # immediately closes after a successful attempt
+    # immediately closes after a successful attempt.
     # ------------------------------------------
     # $1 - url with port;
     # ------------------------------------------
-    # return - 1 or 0
+    # return - 1 or 0.
     # ------------------------------------------
 
     if ! nc -vz -w${CHECK_TIMEOUT} \
@@ -392,7 +397,7 @@ checkTcp() {
 checkUdp() {
     # ------------------------------------------
     # Attempts to establish a UDP connection,
-    # immediately closes after a successful attempt
+    # immediately closes after a successful attempt.
     # ------------------------------------------
     # $1 - url with port;
     # ------------------------------------------
@@ -415,7 +420,7 @@ checkTcpSocket() {
     # ------------------------------------------
     # $1 - path to socket;
     # ------------------------------------------
-    # return - 1 or 0
+    # return - 1 or 0.
     # ------------------------------------------
 
     if [[ ! -S "${1}" ]]
@@ -437,7 +442,7 @@ checkUdpSocket() {
     # ------------------------------------------
     # $1 - path to socket;
     # ------------------------------------------
-    # return - 1 or 0
+    # return - 1 or 0.
     # ------------------------------------------
 
     if [[ ! -S "${1}" ]]
@@ -459,7 +464,7 @@ checkPidfile() {
     # ------------------------------------------
     # $1 - path to pidfile;
     # ------------------------------------------
-    # return - 1 or 0
+    # return - 1 or 0.
     # ------------------------------------------
 
     if [[ ! -f "${1}" ]]
