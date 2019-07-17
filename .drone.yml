@@ -6,7 +6,7 @@ steps:
 - name: Tests
   image: python:3.7-alpine3.9
   commands:
-  - apk add --no-cache bash curl &>/dev/null
+  - apk add --no-cache bash curl ca-certificates &>/dev/null
   - python3 -m unittest discover tests
 
   when:
