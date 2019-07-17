@@ -20,6 +20,7 @@ steps:
   image: python:3.7-alpine3.9
   commands:
   - chmod +x make.py && ./make.py
+  - python3 -m unittest discover tests
 '''
 
     When = lambda: \
