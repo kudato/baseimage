@@ -120,25 +120,26 @@ class TestFunctions(unittest.TestCase):
             )
 
 
-class TestChecks(unittest.TestCase):
-    def get_port(self):
-        return random.randint(20000,22000)
-
-    def test_checkHttpCode(self):
-        port = self.get_port()
-        bash_thread(f'timeout 5 nc -lp {port} -c "echo HTTP/1.1 200 OK\n\n"')
-        self.assertEqual(bash(f'checkHttpCode 200,localhost:{port}; echo $?'),'0')
-        bash_thread(f'timeout 5 nc -lp {port} -c "echo HTTP/1.1 200 OK\n\n"')
-        self.assertEqual(bash(f'checkHttpCode 201,localhost:{port}; echo $?'),'1')
-
-    def test_checkTcp(self):
-        port = self.get_port()
-        bash_thread(f'timeout 45 nc -lp {port}')
-        self.assertEqual(bash(f'checkTcp localhost:{port}; echo $?'),'0')
-        self.assertEqual(bash(f'checkTcp localhost:{port}; echo $?'),'1')
-
-    def test_checkUdp(self):
-        port = self.get_port()
-        bash_thread(f'timeout 5 nc -ulp {port}')
-        self.assertEqual(bash(f'checkUdp localhost:{port}; echo $?'),'0')
-        self.assertEqual(bash(f'checkUdp localhost:{port}; echo $?'),'1')
+#class TestChecks(unittest.TestCase):
+#    def get_port(self):
+#        return random.randint(20000,22000)
+#
+#    def test_checkHttpCode(self):
+#        port = self.get_port()
+#        bash_thread(f'timeout 5 nc -lp {port} -c "echo HTTP/1.1 200 OK\n\n"')
+#        self.assertEqual(bash(f'checkHttpCode 200,localhost:{port}; echo $?'),'0')
+#        bash_thread(f'timeout 5 nc -lp {port} -c "echo HTTP/1.1 200 OK\n\n"')
+#        self.assertEqual(bash(f'checkHttpCode 201,localhost:{port}; echo $?'),'1')
+#
+#    def test_checkTcp(self):
+#        port = self.get_port()
+#        bash_thread(f'timeout 45 nc -lp {port}')
+#        self.assertEqual(bash(f'checkTcp localhost:{port}; echo $?'),'0')
+#        self.assertEqual(bash(f'checkTcp localhost:{port}; echo $?'),'1')
+#
+#    def test_checkUdp(self):
+#        port = self.get_port()
+#        bash_thread(f'timeout 5 nc -ulp {port}')
+#        self.assertEqual(bash(f'checkUdp localhost:{port}; echo $?'),'0')
+#        self.assertEqual(bash(f'checkUdp localhost:{port}; echo $?'),'1')
+#
