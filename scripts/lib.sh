@@ -167,7 +167,7 @@ searchEnv() {
     local index=0
     for item in $(env)
     do
-        if getLeft "=" "${item}" | grep "${1^^}" | grep "${2^^}"
+        if getLeft "=" "${item}" | grep "${1^^}" | grep "${2^^}" &>/dev/null
         then
             result[${index}]=${item}
             ((index+=1))
