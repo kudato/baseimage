@@ -1,0 +1,28 @@
+sudo: required
+language: bash
+services:
+  - docker
+addons:
+  apt:
+    packages:
+      - shunit2
+
+before_install:
+- run_tests.sh
+- echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin &>/dev/null
+
+env:
+  global:
+  - DOCKER_HUB_IMAGE=kudato/baseimage
+  matrix:
+  - SOURCE=alpine:3.10 TAGS=alpine,alpine3.10,latest
+  - SOURCE=python:3.7-alpine3.9 TAGS=python,python-3.7,python-3.7-alpine3.9
+  - SOURCE=python:3.6-alpine3.9 TAGS=python-3.6,python-3.6-alpine3.9
+  - SOURCE=php:7.3-cli-alpine3.9 TAGS=php-cli,php-cli-7.3,php-cli-7.3-alpine3.9
+  - SOURCE=php:7.3-fpm-alpine3.9 TAGS=php-fpm,php-fpm-7.3,php-fpm-7.3-alpine3.9
+  - SOURCE=node:6.17-alpine TAGS=node-6.17,node-6.17-alpine3.9
+  - SOURCE=node:8.16-alpine TAGS=node-8.16,node-8.16-alpine3.9
+  - SOURCE=docker:18.09 TAGS=docker-18.09,docker-18.09-alpine3.9
+
+script:
+  - ./build.sh
