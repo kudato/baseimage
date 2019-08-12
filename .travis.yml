@@ -8,7 +8,7 @@ addons:
       - shunit2
 
 before_install:
-- run_tests.sh
+- sudo chmod +x ./run_tests.sh && ./run_tests.sh
 - echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin &>/dev/null
 
 env:
