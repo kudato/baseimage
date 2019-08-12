@@ -1,26 +1,24 @@
 #!/bin/bash
-source ./lib.sh
+source /usr/bin/lib.sh
 
 for type in \
-    SCRIPT,"runFile" \
-    HTTP,"checkHttpCode" \
-    TCP,"checkTCP" \
-    UDP,"checkUDP" \
-    SOCKET,"checkSocket" \
-    PIDFILE,"checkPidfile"
+    _SCRIPT,"runFile" \
+    _SOCKET,"checkUnixSocket" \
+    _HTTP,"checkHTTPCode" \
+    _TCP,"checkTCPPort" \
+    _UDP,"checkUDPPort" \
+    _TCPSOCKET,"checkTCPSocket" \
+    _UDPSOCKET,"checkUDPSocket" \
+    _PIDFILE,"checkProcessPidfile"
 do
-    for task in $(searchEnv.Values "HEALTHCHECK" "$(getLeft "," "${type}")")
+    for task in $(searchEnv.values "HEALTHCHECK" "$(getLeft "," "${type}")")
     do
-        bgStart "$(getRight "," "${type}")" "${task}" &>/dev/null
+        runThread "$(getRight "," "${type}")" "${task}"
     done
 done
 
-bgWait
-for code in ${BG_TASKS_EXITCODES}
-do
-    if [[ "${code}" != "0" ]]
-    then
-        exit 1
-    fi
-done
+if ! waitThreads
+then
+    exit 1
+fi
 exit 0

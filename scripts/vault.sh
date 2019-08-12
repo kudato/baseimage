@@ -1,58 +1,61 @@
 #!/bin/bash
+source /usr/bin/lib.sh
 
-requestEnv.Vault() {
-    # ------------------------------------------
-    # Get data from Vault KV storage
-    # ------------------------------------------
-    # $* - None
-    # ------------------------------------------
-    # return - NAME___VALUE like array
-    # ------------------------------------------
-    # required env vars:
-    #   - VAULT_KV_VERSION
-    #   - VAULT_TOKEN
-    #   - VAULT_ADDR
-    #   - VAULT_PATH
-    # ------------------------------------------
+defaultEnv VAULT_KV_VERSION=1
 
-    Vault.request() {
-        curl -s \
-             -H "Accept: application/json" \
-             -H "X-Vault-Token: ${VAULT_TOKEN}" \
-             -X GET ${VAULT_ADDR}/"${1}"
-    }
+for var in \
+    VAULT_ADDR \
+    VAULT_TOKEN \
+    VAULT_PATH
+do
+    if [[ -z "$(getEnv var)" ]]
+    then
+        echo "Requred variable ${var} is not defined"
+        exit 1
+    fi
+done
 
-    local uri=v1/secret
+# $1     - url without VAULT_ADDR;
+# return - json string.
+curry vault_request curl -s \
+    -H "Accept: application/json" \
+    -H "X-Vault-Token: ${VAULT_TOKEN}" \
+    -X GET
+
+# return - array of key___value.
+vault_response() {
+    local uri=${VAULT_ADDR}/v1/secret
+    local request_func="vault_request"
+
+    if [[ -n "${VAULT_CUSTOM_REQUEST_FUNC}" ]]
+    then
+        request_func="${VAULT_CUSTOM_REQUEST_FUNC}"
+    fi
+
+    if [[ -n "${ENVIRONMENT}" ]]
+    then
+        export VAULT_PATH="${VAULT_PATH}/${ENVIRONMENT}"
+    fi
+
     if [[ "${VAULT_KV_VERSION}" == "1" ]]
     then
-        Vault.request "${uri}/${VAULT_PATH}/${ENVIRONMENT}" \
+        "${request_func}" "${uri}/${VAULT_PATH}" \
         | jq '.data | to_entries | map([.key, .value]|join("___"))|join(" ")'
+
     elif [[ "${VAULT_KV_VERSION}" == "2" ]]
     then
-        Vault.request "${uri}/data/${VAULT_PATH}/${ENVIRONMENT}" \
+        "${request_func}" "${uri}/data/${VAULT_PATH}" \
         | jq '.data | .data | to_entries | map([.key, .value]|join("___"))|join(" ")'
     fi
 }
 
-if [[ -z "${VAULT_ADDR}" ]] \
- | [[ -z "${VAULT_PATH}" ]]
+VAULT_DATA=$(vault_response)
+if [[ -z "${VAULT_DATA}" ]]
 then
-    echo "ERROR! Vault is enabled but not configured."
+    echo "ERROR! Failed retrieving data from Vault."
     exit 1
-else
-	if [[ -z "${VAULT_KV_VERSION}" ]]
-    then
-        export VAULT_KV_VERSION=1
-    fi
-
-	VAULT_RESPONSE=$(requestEnv.Vault)
-    if [[ -z "${VAULT_RESPONSE}" ]]
-    then
-        echo "ERROR! Failed retrieving data from Vault."
-        exit 1
-    fi
-	for var in ${VAULT_RESPONSE:1:${#VAULT_RESPONSE}-2}; do
-	    export "${var%___*}"="${var#*___}"
-	done
-    unset VAULT_RESPONSE
 fi
+for var in ${VAULT_DATA:1:${#VAULT_DATA}-2}; do
+    export "${var%___*}"="${var#*___}"
+done
+unset VAULT_DATA
