@@ -1,10 +1,16 @@
-FROM alpine:3.9
+ARG image=alpine:3.9
+FROM ${image}
 
-ENV \
-    TZ=UTC \
+ARG init=healthcheck.sh
+ENV _INIT_SCRIPT=/usr/bin/${init} \
     LANG=en_US.UTF-8
 
-COPY scripts /usr/bin/
+COPY scripts/lib.sh \
+     scripts/vault.sh \
+     scripts/entrypoint.sh \
+     scripts/healthcheck.sh \
+     scripts/${init} \
+     /usr/bin/
 
 RUN \
     # re-creating the ping group with a different id
@@ -20,14 +26,11 @@ RUN \
         ca-certificates \
         su-exec \
         tini \
-    && chmod +x \
-            /usr/bin/vault.sh \
-            /usr/bin/entrypoint.sh \
-            /usr/bin/healthcheck.sh
+    && chmod +x /usr/bin/*.sh
 
 HEALTHCHECK \
     --start-period=30s \
-    --interval=10s \
+    --interval=15s \
     --timeout=10s \
     --retries=3 \
     CMD /usr/bin/healthcheck.sh
