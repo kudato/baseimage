@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 source scripts/lib.sh
 
+defaultEnv IMAGE_INIT=entrypoint.sh
 # Required vars:
-# _INIT_SCRIPT
 # DOCKER_HUB_IMAGE
 # TAGS
 # SOURCE
@@ -27,7 +27,8 @@ build_and_push() {
     local name tag tags
     name=$(replace "${SOURCE}" ":" "-")
     docker build -t "${name}" \
-         --build-arg IMAGE="${SOURCE} " .
+         --build-arg image="${SOURCE}" \
+         --build-arg init="${IMAGE_INIT}" .
 
     # push
     for i in $(set_tags "${name}:latest")

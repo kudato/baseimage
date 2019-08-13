@@ -1,8 +1,8 @@
 ARG image=alpine:3.9
 FROM ${image}
 
-ARG init=healthcheck.sh
-ENV _INIT_SCRIPT=/usr/bin/${init} \
+ARG init
+ENV TZ=UTC \
     LANG=en_US.UTF-8
 
 COPY scripts/lib.sh \
