@@ -34,7 +34,6 @@ build_and_push() {
     do
         docker push "${DOCKER_HUB_IMAGE}:${i}"
         docker push "${DOCKER_HUB_IMAGE}:${i}-${TRAVIS_COMMIT:0:7}"
-        echo 0
     done
 }
 
