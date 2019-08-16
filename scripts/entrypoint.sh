@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 source /usr/bin/lib.sh
 
 if [[ -n "${VAULT_TOKEN}" ]] \

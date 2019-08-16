@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 source /usr/bin/lib.sh
 
 defaultEnv VAULT_KV_VERSION=1
