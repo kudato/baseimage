@@ -5,7 +5,7 @@ test_inject() {
     local file=/tmp/libshtestfile.sh
     printf '#!/usr/bin/env bash\nexit 0' \
             > "${file}"
-    inject "${file}"
+    _inject "${file}"
     assertEquals \
         "$(cat "${file}" | sed -n 2p ${file})" \
         "source /usr/bin/lib.sh"

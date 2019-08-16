@@ -1,5 +1,6 @@
-#!/bin/bash
+#!/usr/bin/env bash
 source /usr/bin/lib.sh
+source /usr/bin/checks.sh
 
 for type in \
     _SCRIPT,"runFile" \
@@ -9,7 +10,7 @@ for type in \
     _UDP,"checkUDPPort" \
     _TCPSOCKET,"checkTCPSocket" \
     _UDPSOCKET,"checkUDPSocket" \
-    _PIDFILE,"checkProcessPidfile"
+    _PIDFILE,"checkPidfile"
 do
     for task in $(searchEnv.values "HEALTHCHECK" "$(getLeft "," "${type}")")
     do
