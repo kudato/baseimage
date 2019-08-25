@@ -12,11 +12,17 @@ for type in \
     _UDPSOCKET,"checkUDPSocket" \
     _PIDFILE,"checkPidfile"
 do
-    for task in $(searchEnv.values "HEALTHCHECK" "$(getLeft "," "${type}")")
+    for check in $(searchEnv.values "HEALTHCHECK" "$(getLeft "," "${type}")")
     do
-        runThread "$(getRight "," "${type}")" "${task}"
+        runThread "$(getRight "," "${type}")" "${check}"
     done
 done
+
+if [[ -d /healthcheck ]]; then
+    for i in /healthcheck/*.sh; do
+        runThread "${i}"
+    done
+fi
 
 if ! waitThreads
 then

@@ -75,6 +75,7 @@ checkUDPSocket() {
 
 # $1 - path to pidfile;
 checkPidfile() {
+    echo "444" > /pidchecked
     if [[ ! -f "${1}" ]]
     then
         exit 1
