@@ -1,37 +1,21 @@
-# baseimage [![Build Status](https://drone.kudato.com/api/badges/kudato/baseimage/status.svg)](https://drone.kudato.com/kudato/baseimage)
+# [baseimage](https://github.com/kudato/baseimage/blob/master/Dockerfile) [![Build Status](https://travis-ci.org/kudato/baseimage.svg?branch=master)](https://travis-ci.org/kudato/baseimage)
 
-This project is a wrapper for other base images that adds some features:
+```ENTRYPOINT``` with tini and su-exec to run as user, ```INIT_SCRIPT``` for custom init script, healthchecks and more.
 
-- Runs via [tini](https://github.com/krallin/tini) and [su-exec](https://github.com/ncopa/su-exec) as non-root user;
-- Loading environment variables from [Vault](https://www.vaultproject.io/docs/secrets/kv/index.html) KV.
-- Init scripts with additional functions;
-- Customizable healthchecks HTTP, TCP, UDP, Sockets, Pidfiles and via custom scripts;
-- Configuring via environment vars.
+------
 
+| Supported tags:                  | Based on                                               |          |
+| -------------------------------- | ------------------------------------------------------ | -------- |
+| ```latest```                     | [```alpine:latest```](https://hub.docker.com/_/alpine) | [![](https://images.microbadger.com/badges/image/kudato/baseimage.svg)](https://microbadger.com/images/kudato/baseimage "Get your own image badge on microbadger.com") |
+| ```alpine```, ```alpine3.10```   | [```alpine:3.10```](https://hub.docker.com/_/alpine)   | |
+| ```python```, ```python3.7```    | [```pyhton:3.7-alpine```](https://hub.docker.com/_/python) | |
+| ```php-cli```, ```php7-cli```    | [```php:7-cli-alpine```](https://hub.docker.com/_/php) | |
+| ```php-fpm```, ```php7-fpm```    | [```php:7-fpm-alpine```](https://hub.docker.com/_/php) | |
+| ```php5-cli```                   | [```php:5-cli-alpine```](https://hub.docker.com/_/php) | |
+| ```php5-fpm```                   | [```php:5-fpm-alpine```](https://hub.docker.com/_/php) | |
+| ```node6```                      | [```node:6-alpine```](https://hub.docker.com/_/node/)  | |
+| ```node8```                      | [```node:8-alpine```](https://hub.docker.com/_/node/)  | |
+| ```docker```                     | [```docker:latest```](https://hub.docker.com/_/docker) | |
+| ```nginx```                      | [```nginx:alpine```](https://hub.docker.com/_/docker)  | |
 
-Is designed to be an lightweight, ready-to-use base for various docker images.
-
-
-## Supported tags
-
-| Tags                                                         | Based on                    |
-| ------------------------------------------------------------ | --------------------------- |
-| ```latest```, ```alpine3.9```                                      | ```alpine:3.9```            |
-| ```python```, ```python-3.7```, ```python-3.7-alpine3.9```   | ```pyhton:3.7-alpine3.9```  |
-| ```python-3.6```, ```python-3.6-alpine3.9```                 | ```pyhton:3.6-alpine3.9```  |
-| ```php-cli```, ```php-cli-7.3```, ```php-cli-7.3-alpine3.9``` | ```php:7.3-cli-alpine3.9``` |
-| ```php-fpm```, ```php-fpm-7.3```, ```php-fpm-7.3-alpine3.9``` | ```php:7.3-fpm-alpine3.9``` |
-| ```php-cli-7.2```, ```php-cli-7.2-alpine3.9```               | ```php:7.2-cli-alpine3.9``` |
-| ```php-fpm-7.2```, ```php-fpm-7.2-alpine3.9```               | ```php:7.2-fpm-alpine3.9``` |
-| ```node-6.17```, ```node-6.17-alpine3.9```                   | ```node:6.17-alpine```      |
-| ```node-8.16```, ```node-8.16-alpine3.9```                   | ```node:8.16-alpine```      |
-| ```node-10.15```, ```node-10.15-alpine3.9```                 | ```node:10.15-alpine```     |
-| ```node-11.15```, ```node-11.15-alpine3.9```                 | ```node:11.15-alpine```     |
-| ```node-12.1```, ```node-12.1-alpine3.9```                   | ```node:12.1-alpine```      |
-| ```docker-18.09```, ```docker-18.09-alpine3.9```                   | ```docker:18.09```      |
-
-To avoid updating the image, you can freeze the version by adding the first 7 characters of commit sha to the tag. For example, an image with a ```python-3.7-cdbfaac``` tag will never be changed.
-
-## Read the docs
-
-Documentation: https://baseimage.readthedocs.io
+-------
