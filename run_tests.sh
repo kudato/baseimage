@@ -3,7 +3,6 @@
 # Install this
 for i in \
     lib.sh \
-    vault.sh \
     entrypoint.sh \
     healthcheck.sh
 do
