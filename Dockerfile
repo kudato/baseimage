@@ -1,23 +1,24 @@
-ARG image=alpine:3.9
+ARG image
 FROM ${image}
 
-ARG init
-ENV TZ=UTC \
-    LANG=en_US.UTF-8
+ARG cmd
+ARG init=entrypoint.sh
+ENV IMAGE_CMD=${cmd} \
+    IMAGE_INIT=${init} \
+    LANG=en_US.UTF-8 \
+    TZ=UTC
 
-COPY scripts/lib.sh \
-     scripts/vault.sh \
-     scripts/entrypoint.sh \
+
+COPY scripts/entrypoint.sh \
+     scripts/environment.sh \
      scripts/healthcheck.sh \
      scripts/${init} \
+     scripts/lib.sh \
      /usr/bin/
 
 RUN \
-    # re-creating the ping group with a different id
-    # since on the host this identifier may belong to the docker user
     delgroup ping \
     && addgroup -g 998 ping \
-    #
     && apk add --no-cache \
         bash \
         tzdata \
@@ -36,3 +37,4 @@ HEALTHCHECK \
     CMD /usr/bin/healthcheck.sh
 
 ENTRYPOINT [ "tini", "--", "/usr/bin/entrypoint.sh" ]
+

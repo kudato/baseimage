@@ -1,13 +1,14 @@
 #!/usr/bin/env bash
-source scripts/lib.sh
-
-defaultEnv IMAGE_INIT=entrypoint.sh
 # Required vars:
-# DOCKER_HUB_IMAGE
-# TAGS
-# SOURCE
-# IMAGE
-# COMMIT_SHA
+#   Name=Default
+#   DOCKER_HUB_IMAGE=
+#   TAGS
+#   SOURCE
+#   IMAGE
+#   COMMIT_SHA
+#
+
+source scripts/lib.sh
 
 set_tags() {
     declare -a tags
@@ -24,26 +25,39 @@ set_tags() {
 }
 
 build_and_push() {
-    local name tag tags
+    local name
+    defaultEnv TRAVIS_COMMIT=dev
+    defaultEnv IMAGE_INIT=entrypoint.sh
     name=$(replace "${SOURCE}" ":" "-")
-    docker build -t "${name}" \
-         --build-arg image="${SOURCE}" \
-         --build-arg init="${IMAGE_INIT}" .
+    if [[ -n "${IMAGE_CMD}" ]] \
+    && [[ -n "${IMAGE_INIT}" ]]
+    then
+        docker build -t "${name}" \
+            --build-arg image="${SOURCE}" \
+            --build-arg cmd="${IMAGE_CMD}" \
+            --build-arg init="${IMAGE_INIT}" .
 
-    # push
-    for i in $(set_tags "${name}:latest")
-    do
-        docker push "${DOCKER_HUB_IMAGE}:${i}"
-        docker push "${DOCKER_HUB_IMAGE}:${i}-${TRAVIS_COMMIT:0:7}"
-    done
+    else
+        docker build -t "${name}" \
+            --build-arg image="${SOURCE}" .
+    fi
+
+    if [[ "${?}" != "0" ]]
+    then
+        echo "Build failed"
+        exit 1
+    fi
+    if [[ -n "${DOCKER_HUB_IMAGE}" ]]
+    then
+        for i in $(set_tags "${name}")
+        do
+            docker push "${DOCKER_HUB_IMAGE}:${i}"
+            docker push "${DOCKER_HUB_IMAGE}:${i}-${TRAVIS_COMMIT:0:7}"
+        done
+    fi
 }
 
 echo "Building.."
 build_and_push
-if [[ "${?}" != "0" ]]
-then
-    echo "Build failing"
-    exit 1
-fi
 echo "Build complete"
 exit 0
