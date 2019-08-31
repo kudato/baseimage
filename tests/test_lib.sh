@@ -1,17 +1,6 @@
 #!/usr/bin/env bash
 source ../scripts/lib.sh
 
-test_inject() {
-    local file=/tmp/libshtestfile.sh
-    printf '#!/usr/bin/env bash\nexit 0' \
-            > "${file}"
-    _inject "${file}"
-    assertEquals \
-        "$(cat "${file}" | sed -n 2p ${file})" \
-        "source /usr/bin/lib.sh"
-    rm ${file}
-}
-
 test_random() {
     for i in \
         4 \
@@ -22,6 +11,7 @@ test_random() {
         assertNotNull "$(random "${i}")"
     done
 }
+
 test_uuid4() {
     for i in \
         4 \
@@ -73,7 +63,7 @@ test_replaceInFile() {
     assertEquals \
         "$(replace "$(cat ${file} | sed -n 2p ${file})" ":" "")" \
         "exit 1"
-    rm ${file}
+    rm "${file}"
 }
 
 test_repeat() {
@@ -84,8 +74,8 @@ test_repeat() {
 
 test_map() {
     assertEquals \
-    "$(map "echo" "FOOOOOO BARRRRR BAZZZZZ")" \
-    "FOOOOOO BARRRRR BAZZZZZ"
+        "$(map "echo" "FOOOOOO BARRRRR BAZZZZZ")" \
+        "FOOOOOO BARRRRR BAZZZZZ"
 }
 
 test_getEnv() {
@@ -113,37 +103,25 @@ test_defaultEnv() {
 test_searchEnv() {
     export BARRRRR=baaaaazzzzz BARRRRR2=12345
     assertEquals \
-    "$(searchEnv BAR RRRR)" \
-    "BARRRRR2=12345 BARRRRR=baaaaazzzzz"
+        "$(searchEnv BAR RRRR)" \
+        "BARRRRR2=12345 BARRRRR=baaaaazzzzz"
     unset BARRRRR BARRRRR2
 }
 
 test_searchEnv_keys() {
     export BARRRRR=baaaaazzzzz BARRRRR2=12345
     assertEquals \
-    "$(searchEnv.keys BAR RRRR)" \
-    "BARRRRR2 BARRRRR"
+        "$(searchEnv.keys BAR RRRR)" \
+        "BARRRRR2 BARRRRR"
     unset BARRRRR BARRRRR2
 }
 
 test_searchEnv_values() {
     export BARRRRR=baaaaazzzzz BARRRRR2=12345
     assertEquals \
-    "$(searchEnv.values BAR RRRR)" \
-    "12345 baaaaazzzzz"
+        "$(searchEnv.values BAR RRRR)" \
+        "12345 baaaaazzzzz"
     unset BARRRRR BARRRRR2
-}
-
-test_runFile() {
-    local file file1
-    file=/tmp/$(random 4).sh
-    file1=/tmp/$(random 4).sh
-    printf '#!/usr/bin/env bash\nexit 0' > "${file}"
-    printf '#!/usr/bin/env bash\nexit 1' > "${file1}"
-    assertEquals "$(runFile "${file}"; echo ${?})" "0"
-    assertEquals "$(runFile "${file1}"; echo ${?})" "1"
-    assertEquals "$(runFile "/tmp/none"; echo ${?})" "1"
-    rm "${file}" "${file1}"
 }
 
 test_Threads() {
@@ -152,9 +130,9 @@ test_Threads() {
     file1=/tmp/$(random 4).sh
     printf '#!/usr/bin/env bash\nexit 0' > "${file}"
     printf '#!/usr/bin/env bash\nexit 1' > "${file1}"
-    runThread runFile "${file}"
+    runThread "${file}"
     waitThreads &>/dev/null; assertEquals "${?}" "0"
-    runThread runFile "${file1}"
+    runThread "${file1}"
     waitThreads &>/dev/null; assertEquals "${?}" "1"
     rm "${file}" "${file1}"
 }

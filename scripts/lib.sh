@@ -134,35 +134,12 @@ searchEnv.values() {
     map "_getValue" "$(searchEnv "${1}" "${2}")"
 }
 
-# $1 - file path.
-_inject() {
-    local lib
-    lib="source /usr/bin/lib.sh"
-    if [[ "$(sed -n 2p ${1})" != "${lib}" ]]
-    then
-        sed -i "1a\\${lib}\\n" "${1}"
-    fi
-}
-
-# $1 - file path.
-runFile() {
+# $* - function with args;
+runThread() {
     if [[ -f "${1}" ]]
     then
         chmod +x "${1}"
-        _inject "${1}"
-        if ! ${1}
-        then
-            return 1
-        else
-            return 0
-        fi
-    else
-        return 1
     fi
-}
-
-# $* - function with args;
-runThread() {
     local pid
     "${@}" &>/dev/null &
     pid=${!}
@@ -205,7 +182,14 @@ createUser() {
         if [[ -z "$2" ]]; then uid=$(_userUidSeq); fi
         if [[ -z "$3" ]]; then shell=${_USER_DEFAULT_SHELL}; fi
 
-        adduser -s "${shell}" -D -u "${uid}" "${1}" \
+        addgroup --gid "${uid}" "${1}"
+        adduser -s "${shell}" \
+           --disabled-password \
+           --home "${home}" \
+           --ingroup "${1}" \
+           --no-create-home \
+           --uid "${uid}" \
+           "${1}" \
         && chown -R "${1}":"${1}" "${home}"
         if [[ "${PWD}" != "/" ]]
         then

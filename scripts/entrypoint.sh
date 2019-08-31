@@ -23,22 +23,32 @@ then
 fi
 
 # -------------------------------------------------------------
-
 if [[ -n "${IMAGE_INIT}" ]] \
-&& [[ -n "${IMAGE_CMD}" ]] \
-&& [[ -z "${1}" ]]
+&& [[ "${IMAGE_INIT}" != "entrypoint.sh" ]]
 then
 	runThread "${IMAGE_INIT}"
-	set -- "$@" "${IMAGE_CMD}"
 fi
 
-if [[ -n "${INIT_SCRIPT}" ]]; then runThread "${INIT_SCRIPT}"; fi
-for i in $(searchEnv.values SCRIPT _INIT); do runThread "${i}"; done
+if [[ -n "${INIT_SCRIPT}" ]]
+then
+    runThread "${INIT_SCRIPT}"
+fi
+
+for i in $(searchEnv.values SCRIPT _INIT)
+do
+    runThread "${i}"
+done
 
 if ! waitThreads
 then
 	echo "Init scripts failed"
 	exit 1
+fi
+
+if [[ -n "${IMAGE_CMD}" ]] \
+&& [[ -z "${1}" ]]
+then
+	set -- "$@" "${IMAGE_CMD}"
 fi
 
 exec "$@"
