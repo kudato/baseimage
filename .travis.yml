@@ -18,6 +18,8 @@ env:
   - SOURCE=alpine:latest TAGS=latest
   - SOURCE=alpine:3.10 TAGS=alpine,alpine3.10
   - SOURCE=python:3.7-alpine TAGS=python,python3.7
+  - SOURCE=python:3.6-alpine TAGS=python3.6
+  - SOURCE=python:rc-alpine TAGS=pythonrc
   - SOURCE=php:7-cli-alpine TAGS=php-cli,php7-cli
   - SOURCE=php:7-fpm-alpine TAGS=php-fpm,php7-fpm
   - SOURCE=php:5-cli-alpine TAGS=php5-cli
@@ -28,3 +30,6 @@ env:
   - SOURCE=nginx:alpine TAGS=nginx IMAGE_INIT=nginx.sh IMAGE_CMD=/usr/sbin/nginx
 script:
   - ./build.sh
+
+after_success:
+  - curl -XPOST ${REFRESH_BADGES_URL}
