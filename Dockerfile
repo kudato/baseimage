@@ -3,21 +3,21 @@ FROM ${image}
 
 ARG cmd
 ARG init=entrypoint.sh
+
 ENV IMAGE_CMD=${cmd} \
     IMAGE_INIT=${init} \
     LANG=en_US.UTF-8 \
     TZ=UTC
 
-
 COPY scripts/entrypoint.sh \
      scripts/environment.sh \
      scripts/healthcheck.sh \
-     scripts/${init} \
      scripts/lib.sh \
+     scripts/${init} \
      /usr/bin/
 
-RUN \
-    delgroup ping \
+RUN chmod +x /usr/bin/*.sh \
+    && delgroup ping \
     && addgroup -g 998 ping \
     && apk add --no-cache \
         bash \
@@ -26,8 +26,7 @@ RUN \
         curl \
         ca-certificates \
         su-exec \
-        tini \
-    && chmod +x /usr/bin/*.sh
+        tini
 
 HEALTHCHECK \
     --start-period=30s \
@@ -37,4 +36,3 @@ HEALTHCHECK \
     CMD /usr/bin/healthcheck.sh
 
 ENTRYPOINT [ "tini", "--", "/usr/bin/entrypoint.sh" ]
-
