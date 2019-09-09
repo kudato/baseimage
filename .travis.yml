@@ -25,7 +25,9 @@ env:
   - SOURCE=php:5-cli-alpine TAGS=php5-cli
   - SOURCE=php:5-fpm-alpine TAGS=php5-fpm
   - SOURCE=node:6-alpine TAGS=node6
-  - SOURCE=node:8-alpine TAGS=node,node8
+  - SOURCE=node:8-alpine TAGS=node8
+  - SOURCE=node:10-alpine TAGS=node10
+  - SOURCE=node:12-alpine TAGS=node12
   - SOURCE=docker:latest TAGS=docker
   - SOURCE=nginx:alpine TAGS=nginx IMAGE_INIT=nginx.sh IMAGE_CMD=/usr/sbin/nginx
 script:
