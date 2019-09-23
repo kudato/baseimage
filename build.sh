@@ -54,7 +54,7 @@ then
     for i in $(set_tags "${name}")
     do
         docker push "${DOCKER_HUB_IMAGE}:${i}"
-        docker push "${DOCKER_HUB_IMAGE}:${TRAVIS_COMMIT:0:7}-${i}"
+        docker push "${DOCKER_HUB_IMAGE}:${tag}-${TRAVIS_COMMIT:0:7}"
     done
 fi
 
