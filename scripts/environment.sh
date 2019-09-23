@@ -1,6 +1,14 @@
 #!/usr/bin/env bash
 source /usr/bin/lib.sh
 
+SECRET_ENV_INDEX=0
+declare -a SECRET_ENV
+
+addSE() {
+    SECRET_ENV[${SECRET_ENV_INDEX}]="${1}"
+    ((SECRET_ENV_INDEX+=1))
+}
+
 # Vault
 if [[ -n "${VAULT_TOKEN}" ]] \
 && [[ -z "${VAULT_DISABLE}" ]]
@@ -59,6 +67,9 @@ then
     fi
     for var in ${_VAULT_DATA:1:${#_VAULT_DATA}-2}; do
         export "${var%___*}"="${var#*___}"
+        addSE "${var%___*}"
     done
     unset _VAULT_DATA
 fi
+
+echo "${SECRET_ENV[@]}" > /.senv
