@@ -8,7 +8,7 @@ addons:
       - shunit2
 
 before_install:
-- ./run_tests.sh
+- ./tests/run_tests.sh
 - echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin &>/dev/null
 
 env:
@@ -29,7 +29,7 @@ env:
   - SOURCE=node:10-alpine TAGS=node10
   - SOURCE=node:12-alpine TAGS=node12
   - SOURCE=docker:latest TAGS=docker
-  - SOURCE=nginx:alpine TAGS=nginx IMAGE_INIT=nginx.sh IMAGE_CMD=/usr/sbin/nginx
+  - SOURCE=nginx:alpine TAGS=nginx
 script:
   - ./build.sh
 

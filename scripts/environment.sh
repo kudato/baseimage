@@ -21,7 +21,7 @@ then
     do
         if [[ -z "$(getEnv var)" ]]
         then
-            echo "Requred variable ${var} is not defined"
+            echo "${var} is not defined"
             exit 1
         fi
     done
@@ -72,4 +72,12 @@ then
     unset _VAULT_DATA
 fi
 
-echo "${SECRET_ENV[@]}" > /.senv
+if [[ -n "${DUMP_SECRETS_TO_FILE}" ]]
+then
+    echo "${SECRET_ENV[@]}" > "${DUMP_SECRETS_TO_FILE}"
+fi
+
+if [[ -n "${ADD_SECRETS_TO_FILE}" ]]
+then
+    echo "${SECRET_ENV[@]}" >> "${ADD_SECRETS_TO_FILE}"
+fi
