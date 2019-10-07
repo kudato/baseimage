@@ -30,6 +30,8 @@ env:
   - SOURCE=node:12-alpine TAGS=node12
   - SOURCE=docker:latest TAGS=docker
   - SOURCE=nginx:alpine TAGS=nginx
+  - SOURCE=nginx:stable-alpine TAGS=stable
+
 script:
   - ./build.sh
 

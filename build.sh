@@ -1,11 +1,7 @@
 #!/usr/bin/env bash
 # shellcheck disable=SC1091,SC2181
-#zset -x
 #      SOURCE
 #      TAGS
-
-#      IMAGE_INIT
-#      IMAGE_CMD
 
 source scripts/lib.sh
 
