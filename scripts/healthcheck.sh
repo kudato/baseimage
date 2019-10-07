@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 source /usr/bin/lib.sh
-source /usr/bin/checks.sh
 
 for type in \
     _SCRIPT,"runFile" \
