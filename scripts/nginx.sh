@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 source /usr/bin/lib.sh
 
-NGINX_HEALTHCHECK=/healthcheck/nginx.sh
+# -----------------------------------------------------------
 NGINX_CONFIG=/etc/nginx/nginx.conf
 
 for i in \
@@ -61,16 +61,16 @@ if ! [[ -d /conf.d ]]
 then
     mkdir /conf.d
 fi
-
+# -----------------------------------------------------------
 if  ! [[ -d /healthcheck ]]
 then
     mkdir /healthcheck
 fi
 
-cat <<EOF > ${NGINX_HEALTHCHECK}
+defaultEnv NGINX_PIDFILE=/var/run/nginx.pid
+cat <<EOF > /healthcheck/nginx.sh
 #!/usr/bin/env bash
 source /usr/bin/lib.sh
-source /usr/bin/checks.sh
 
 if ! checkPidfile ${NGINX_PIDFILE}
 then
@@ -78,6 +78,6 @@ then
 fi
 exit 0
 EOF
+chmod +x /healthcheck/nginx.sh
 
-chmod +x "${NGINX_HEALTHCHECK}"
 exit 0
