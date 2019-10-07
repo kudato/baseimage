@@ -1,14 +1,9 @@
 #!/usr/bin/env bash
 # shellcheck disable=SC1091,SC2181
-
-# Build docker image from ./Dockerfile
-# set DOCKER_HUB_IMAGE for push image to docker hub
-
-# Variables:
-#   required:
+#zset -x
 #      SOURCE
 #      TAGS
-#   optional:
+
 #      IMAGE_INIT
 #      IMAGE_CMD
 
@@ -31,16 +26,22 @@ set_tags() {
     unset tags
 }
 
-defaultEnv TRAVIS_COMMIT=dev
-defaultEnv IMAGE_INIT=entrypoint.sh
-defaultEnv IMAGE_CMD="/bin/bash"
-name=$(replace "${SOURCE}" ":" "-")
-
 echo "Building.."
+defaultEnv TRAVIS_COMMIT=dev
+
+name=$(replace "${SOURCE}" ":" "-")
+file_name="$(getRight "," "${TAGS}").sh"
+path_file="scripts/${file_name}"
+if [[ -f "${path_file}" ]]
+then
+    export IMAGE_INIT="${file_name}"
+else
+    defaultEnv IMAGE_INIT=entrypoint.sh
+fi
+
 docker build -t "${name}" \
     --build-arg image="${SOURCE}" \
-    --build-arg cmd="${IMAGE_CMD}" \
-    --build-arg init="${IMAGE_INIT}" .
+    --build-arg image_init="${IMAGE_INIT}" .
 
 if [[ "${?}" != "0" ]]
 then
@@ -53,9 +54,9 @@ if [[ -n "${DOCKER_HUB_IMAGE}" ]]
 then
     for i in $(set_tags "${name}")
     do
-        docker push "${DOCKER_HUB_IMAGE}:${i}"
         docker push "${DOCKER_HUB_IMAGE}:${tag}-${TRAVIS_COMMIT:0:7}"
+        docker push "${DOCKER_HUB_IMAGE}:${i}"
+        echo "Push ${DOCKER_HUB_IMAGE}:${i} complete"
     done
 fi
-
 exit 0
