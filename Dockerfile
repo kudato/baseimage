@@ -1,6 +1,8 @@
 ARG image
 FROM ${image}
 
+WORKDIR /src
+
 ARG image_init
 ENV IMAGE_INIT=${image_init} \
     LANG=en_US.UTF-8 \
