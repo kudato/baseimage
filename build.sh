@@ -8,7 +8,7 @@
 #   TAGS
 #   FROM
 
-source ./entrypoint.sh --source-only
+source ./entrypoint.sh --import
 
 # replace $2 to $3 in $1.
 replace() { echo "${1//${2}/${3}}"; }
