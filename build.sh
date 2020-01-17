@@ -37,11 +37,10 @@ set_tags() {
 }
 
 push_image() {
-    for i in $(set_tags "${name}")
+    for i in $(set_tags "${FROM//":"/"-"}")
     do
         docker push "${DOCKER_HUB_IMAGE}:${tag}-${TRAVIS_COMMIT:0:7}"
         docker push "${DOCKER_HUB_IMAGE}:${i}"
-        echo "Push ${DOCKER_HUB_IMAGE}:${i} complete"
     done
 }
 
