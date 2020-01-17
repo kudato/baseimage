@@ -1,0 +1,10 @@
+version: "3"
+
+services:
+  entrypoint_sh_tests:
+    build:
+      dockerfile: tests/Dockerfile
+      context: .
+      args:
+        image: ${FROM}
+    command: bash -c /usr/bin/tests.sh
