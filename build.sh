@@ -10,15 +10,9 @@
 
 source ./entrypoint.sh --import
 
-# replace $2 to $3 in $1.
-replace() { echo "${1//${2}/${3}}"; }
-
 build_image() {
-    local name
-    name=$(replace "${FROM}" ":" "-")
-
-    docker build -t "${name}" \
-        --build-arg image="${FROM}"
+    local name; name="${FROM//":"/"-"}"
+    docker build -t "${name}" --build-arg image="${FROM}" .
 
     if [[ "${?}" != "0" ]]
     then
