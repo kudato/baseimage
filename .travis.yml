@@ -28,8 +28,8 @@ env:
   - FROM=nginx:stable-alpine TAGS=stable
 
 script:
-- chmod +x ./build.sh
-- ./build.sh
+- echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin &>/dev/null
+- chmod +x ./build.sh; ./build.sh
 
 after_success:
 - curl -XPOST ${REFRESH_BADGES_URL}
