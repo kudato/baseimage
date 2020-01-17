@@ -1,39 +1,34 @@
+dist: bionic
 sudo: required
 language: bash
+
 services:
   - docker
-addons:
-  apt:
-    packages:
-      - shunit2
-
-before_install:
-- ./tests/run_tests.sh
-- echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin &>/dev/null
 
 env:
   global:
   - DOCKER_HUB_IMAGE=kudato/baseimage
   matrix:
-  - SOURCE=alpine:latest TAGS=latest
-  - SOURCE=alpine:3.10 TAGS=alpine,alpine3.10
-  - SOURCE=python:3.7-alpine TAGS=python,python3.7
-  - SOURCE=python:3.6-alpine TAGS=python3.6
-  - SOURCE=python:rc-alpine TAGS=pythonrc
-  - SOURCE=php:7-cli-alpine TAGS=php-cli,php7-cli
-  - SOURCE=php:7-fpm-alpine TAGS=php-fpm,php7-fpm
-  - SOURCE=php:5-cli-alpine TAGS=php5-cli
-  - SOURCE=php:5-fpm-alpine TAGS=php5-fpm
-  - SOURCE=node:6-alpine TAGS=node6
-  - SOURCE=node:8-alpine TAGS=node8
-  - SOURCE=node:10-alpine TAGS=node10
-  - SOURCE=node:12-alpine TAGS=node12
-  - SOURCE=docker:latest TAGS=docker
-  - SOURCE=nginx:alpine TAGS=nginx
-  - SOURCE=nginx:stable-alpine TAGS=stable
+  - FROM=alpine:latest TAGS=latest
+  - FROM=alpine:3.10 TAGS=alpine,alpine3.10
+  - FROM=python:3.8-alpine TAGS=python,python3.8
+  - FROM=python:3.7-alpine TAGS=python,python3.7
+  - FROM=python:3.6-alpine TAGS=python3.6
+  - FROM=python:rc-alpine TAGS=pythonrc
+  - FROM=php:7-cli-alpine TAGS=php-cli,php7-cli
+  - FROM=php:7-fpm-alpine TAGS=php-fpm,php7-fpm
+  - FROM=php:5-cli-alpine TAGS=php5-cli
+  - FROM=php:5-fpm-alpine TAGS=php5-fpm
+  - FROM=node:6-alpine TAGS=node6
+  - FROM=node:8-alpine TAGS=node8
+  - FROM=node:10-alpine TAGS=node10
+  - FROM=node:12-alpine TAGS=node12
+  - FROM=docker:latest TAGS=docker
+  - FROM=nginx:alpine TAGS=nginx
+  - FROM=nginx:stable-alpine TAGS=stable
 
 script:
-  - ./build.sh
+- ./build.sh
 
 after_success:
-  - curl -XPOST ${REFRESH_BADGES_URL}
+- curl -XPOST ${REFRESH_BADGES_URL}
