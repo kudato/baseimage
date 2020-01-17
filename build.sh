@@ -8,7 +8,10 @@
 #   TAGS
 #   FROM
 
-source /usr/bin/entrypoint.sh --source-only
+source ./entrypoint.sh --source-only
+
+# replace $2 to $3 in $1.
+replace() { echo "${1//${2}/${3}}"; }
 
 build_image() {
     local name
