@@ -9,25 +9,44 @@ env:
   global:
   - DOCKER_HUB_IMAGE=kudato/baseimage
   matrix:
+# pure alpine
   - FROM=alpine:latest TAGS=latest
-  - FROM=alpine:3.10 TAGS=alpine,alpine3.10
+  - FROM=alpine:3.11 TAGS=alpine,alpine3.11
+  - FROM=alpine:3.10 TAGS=alpine3.10
+# with python
   - FROM=python:3.8-alpine TAGS=python,python3.8
   - FROM=python:3.7-alpine TAGS=python,python3.7
   - FROM=python:3.6-alpine TAGS=python3.6
   - FROM=python:rc-alpine TAGS=pythonrc
+# with php
   - FROM=php:7-cli-alpine TAGS=php-cli,php7-cli
   - FROM=php:7-fpm-alpine TAGS=php-fpm,php7-fpm
   - FROM=php:5-cli-alpine TAGS=php5-cli
   - FROM=php:5-fpm-alpine TAGS=php5-fpm
+# with node
   - FROM=node:6-alpine TAGS=node6
   - FROM=node:8-alpine TAGS=node8
   - FROM=node:10-alpine TAGS=node10
   - FROM=node:12-alpine TAGS=node12
+# docker in docker
   - FROM=docker:latest TAGS=docker
-  - FROM=nginx:alpine TAGS=nginx
-  - FROM=nginx:stable-alpine TAGS=stable
+# nginx
+  - FROM=nginx:alpine TAGS=nginx,nginx-mainline
+  - FROM=nginx:stable-alpine TAGS=nginx-stable
+# hashicorp vault
+  - FROM=vault:latest TAGS=vault
+  - FROM=vault:1.3.1 TAGS=vault1.3.1
+# traefik
+  - FROM=traefik:1.7-alpine TAGS=traefik1,traefik1.7
+  - FROM=traefik:2.1 TAGS=traefik2,traefik2.1
+# postrgesql
+  - FROM=postgres:12-alpine TAGS=postgres,postgres12
+  - FROM=postgres:11-alpine TAGS=postgres11
+  - FROM=postgres:10-alpine TAGS=postgres10
+  - FROM=postgres:9.6-alpine TAGS=postgres9.6
 
-script:
+
+  script:
 - echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin &>/dev/null
 - chmod +x ./build.sh; ./build.sh
 
