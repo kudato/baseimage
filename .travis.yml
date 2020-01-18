@@ -46,7 +46,8 @@ env:
   - FROM=postgres:9.6-alpine TAGS=postgres9.6
 
 
-  script:
+script:
+- docker-compose up --build
 - echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin &>/dev/null
 - chmod +x ./build.sh; ./build.sh
 
