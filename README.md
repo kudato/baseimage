@@ -1,6 +1,6 @@
 # baseimage [![Build Status](https://travis-ci.org/kudato/baseimage.svg?branch=master)](https://travis-ci.org/kudato/baseimage)
 
-[Alpine](https://alpinelinux.org)-based base image and ```entrypoint.sh``` script with [tini](https://github.com/krallin/tini) and [su-exec](https://github.com/ncopa/su-exec).
+[Alpine](https://alpinelinux.org)-based baseimage and ```entrypoint.sh``` script with [tini](https://github.com/krallin/tini) and [su-exec](https://github.com/ncopa/su-exec).
 
 # Usage
 
